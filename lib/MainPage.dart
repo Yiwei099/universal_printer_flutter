@@ -15,17 +15,21 @@ class _MainPageState extends State<MainPage> {
 
   int _currentIndex = 0;
 
+
   final List<Widget> _pages = [
-    const MyPrinterPage(),
+    MyPrinterPage(),
     // const ModifyPrinterPage(),
   ];
 
   // 添加打印机
-  void _onAddPrinter() {
-    Navigator.push(
+  void _onAddPrinter(BuildContext context) async {
+    final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ModifyPrinterPage()),
     );
+    if (result != null) {
+      (_pages[0] as MyPrinterPage).addPrinter(result);
+    }
   }
 
   void _onItemTapped(int index) {
@@ -58,7 +62,7 @@ class _MainPageState extends State<MainPage> {
       floatingActionButton: Transform.scale(
         scale: 0.6,
         child: ElevatedButton(
-          onPressed: _onAddPrinter,
+          onPressed: () => _onAddPrinter(context),
           style: ElevatedButton.styleFrom(
             shape: const CircleBorder(),
             padding: const EdgeInsets.all(20),

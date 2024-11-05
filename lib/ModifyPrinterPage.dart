@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:universal_printer_flutter/bean/MyPrinter.dart';
+import 'package:universal_printer_flutter/widget/ComOption.dart';
 
-class ModifyPrinterPage extends StatelessWidget {
+import 'utils/PrinterBeanUtils.dart';
+
+class ModifyPrinterPage extends StatefulWidget {
   const ModifyPrinterPage({super.key});
 
+  @override
+  State<StatefulWidget> createState() => _ModifyPrinterPageState();
+}
+
+class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
+  late MyPrinter myPrinter;
+
   void _onBackPressed(BuildContext context) {
-    Navigator.of(context).pop();
+    Navigator.pop(context);
   }
 
-  void _onSavePressed(BuildContext context) {}
+  void _onSavePressed(BuildContext context) {
+    Navigator.pop(context, myPrinter);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    myPrinter = MyPrinter();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,55 +57,45 @@ class ModifyPrinterPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: ListView(
-            children: const [
+            children: [
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('连接方式'),
-                  Row(
-                    children: [
-                      Text('1. 选择连接方式'),
-                    ],
-                  )
+                  const Text('1. 连接方式'),
+                  const SizedBox(height: 4),
+                  ComOption(
+                      name: '选择连接方式',
+                      value: PrinterBeanUtils.convertConnectName(
+                          myPrinter.connect)),
                 ],
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('打印模式'),
-                  Row(
-                    children: [
-                      Text('2. 选择打印模式'),
-                    ],
-                  )
+                  const Text('2. 打印模式'),
+                  ComOption(
+                      name: '选择打印模式',
+                      value:
+                          PrinterBeanUtils.convertModelName(myPrinter.model)),
                 ],
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('SDK策略'),
-                  Row(
-                    children: [
-                      Text('3. 选择SDK策略'),
-                    ],
-                  )
+                  const Text('3. SDK策略'),
+                  ComOption(
+                      name: '选择SDK策略',
+                      value: PrinterBeanUtils.convertSDKName(myPrinter.sdk)),
                 ],
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('打印机'),
-                  Row(
-                    children: [
-                      Text('4. 选择 USB 设备'),
-                    ],
-                  )
-                ],
-              ),
-              Column(
-                children: [
-                  Text('连接方式'),
-                  Row(
-                    children: [
-                      Text('1. 选择连接方式'),
-                    ],
-                  )
+                  const Text('4. 打印机'),
+                  ComOption(
+                      name: '选择设备',
+                      value:
+                          PrinterBeanUtils.convertModelName(myPrinter.model)),
                 ],
               ),
             ],
