@@ -2,33 +2,37 @@ import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/MyPrinterPage.dart';
 
 import 'ModifyPrinterPage.dart';
+import 'bean/MyPrinter.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _MainPageState();
-
 }
 
 class _MainPageState extends State<MainPage> {
-
   int _currentIndex = 0;
+  List<MyPrinter> printer = [];
 
-
-  final List<Widget> _pages = [
-    MyPrinterPage(),
-    // const ModifyPrinterPage(),
-  ];
+  void _onAddPrinterResult({MyPrinter? myPrinter, int index = 0}) {
+    setState(() {
+      if (myPrinter != null) {
+        printer.add(myPrinter);
+      } else {
+        printer.removeAt(index);
+      }
+    });
+  }
 
   // 添加打印机
-  void _onAddPrinter(BuildContext context) async {
+  void _onAddPrinter({required BuildContext context}) async {
     final result = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const ModifyPrinterPage()),
     );
     if (result != null) {
-      (_pages[0] as MyPrinterPage).addPrinter(result);
+      _onAddPrinterResult(myPrinter: result);
     }
   }
 
@@ -57,12 +61,20 @@ class _MainPageState extends State<MainPage> {
           )),
       body: IndexedStack(
         index: _currentIndex,
-        children: _pages,
+        children: [
+          MyPrinterPage(
+            initialPrinter: printer,
+            go2AddPrinter: () => {
+              _onAddPrinter(context: context)
+            },
+          ),
+          // const ModifyPrinterPage(),
+        ],
       ),
       floatingActionButton: Transform.scale(
         scale: 0.6,
         child: ElevatedButton(
-          onPressed: () => _onAddPrinter(context),
+          onPressed: () => _onAddPrinter(context: context),
           style: ElevatedButton.styleFrom(
             shape: const CircleBorder(),
             padding: const EdgeInsets.all(20),
@@ -92,5 +104,4 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
-
 }

@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:universal_printer_flutter/bean/Item.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
+import 'package:universal_printer_flutter/utils/StringUtils.dart';
 import 'package:universal_printer_flutter/widget/ComOption.dart';
 
+import 'constant/Constant.dart';
 import 'utils/PrinterBeanUtils.dart';
+import 'widget/BottomSheetChooseDialog.dart';
 
 class ModifyPrinterPage extends StatefulWidget {
-  const ModifyPrinterPage({super.key});
+  final MyPrinter? myPrinter;
+
+  const ModifyPrinterPage({super.key, this.myPrinter});
 
   @override
   State<StatefulWidget> createState() => _ModifyPrinterPageState();
@@ -14,24 +20,35 @@ class ModifyPrinterPage extends StatefulWidget {
 class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
   late MyPrinter myPrinter;
 
-  void _onBackPressed(BuildContext context) {
-    Navigator.pop(context);
-  }
-
-  void _onSavePressed(BuildContext context) {
-    Navigator.pop(context, myPrinter);
-  }
-
   @override
   void initState() {
     super.initState();
-    myPrinter = MyPrinter();
+    myPrinter =
+        widget.myPrinter ?? MyPrinter(name: StringUtils.getChineseString(3));
+  }
+
+  void _notifyPrinterConnect(ConnectType item) {
+    setState(() {
+      myPrinter.connect = item;
+    });
+  }
+
+  void _notifyPrinterCommand(CommandType item) {
+    setState(() {
+      myPrinter.model = item;
+    });
+  }
+
+  void _notifyPrinterSDK(SDK item) {
+    setState(() {
+      myPrinter.sdk = item;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.grey[150],
       appBar: PreferredSize(
           preferredSize: const Size.fromHeight(40.0),
           child: AppBar(
@@ -43,9 +60,9 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
             ),
             centerTitle: true,
             titleSpacing: 0,
-            title: const Text(
-              '新建打印机',
-              style: TextStyle(
+            title: Text(
+              myPrinter.name.isNotEmpty ? myPrinter.name : '新建打印机',
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
               ),
@@ -63,29 +80,66 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                 children: [
                   const Text('1. 连接方式'),
                   const SizedBox(height: 4),
-                  ComOption(
-                      name: '选择连接方式',
-                      value: PrinterBeanUtils.convertConnectName(
-                          myPrinter.connect)),
+                  InkWell(
+                    onTap: () => {
+                      _showBottomSheet<ConnectType>(
+                          context,
+                          '选择连接方式',
+                          myPrinter.connect,
+                          PrinterBeanUtils.getConnectItemList(),
+                          (item) => {
+                                _notifyPrinterConnect(item),
+                                Navigator.pop(context)
+                              })
+                    },
+                    child: ComOption(
+                        name: '选择连接方式',
+                        value: PrinterBeanUtils.convertConnectName(
+                            myPrinter.connect)),
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('2. 打印模式'),
-                  ComOption(
+                  InkWell(
+                    onTap: () => {
+                      _showBottomSheet<CommandType>(
+                          context,
+                          '选择打印模式',
+                          myPrinter.model,
+                          PrinterBeanUtils.getModelItemList(),
+                          (item) => {
+                                _notifyPrinterCommand(item),
+                                Navigator.pop(context)
+                              })
+                    },
+                    child: ComOption(
                       name: '选择打印模式',
-                      value:
-                          PrinterBeanUtils.convertModelName(myPrinter.model)),
+                      value: PrinterBeanUtils.convertModelName(myPrinter.model),
+                    ),
+                  ),
                 ],
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('3. SDK策略'),
-                  ComOption(
-                      name: '选择SDK策略',
-                      value: PrinterBeanUtils.convertSDKName(myPrinter.sdk)),
+                  InkWell(
+                    onTap: () => {
+                      _showBottomSheet<SDK>(
+                          context,
+                          '选择SDK策略',
+                          myPrinter.sdk,
+                          PrinterBeanUtils.getSDKItemList(),
+                          (item) =>
+                              {_notifyPrinterSDK(item), Navigator.pop(context)})
+                    },
+                    child: ComOption(
+                        name: '选择SDK策略',
+                        value: PrinterBeanUtils.convertSDKName(myPrinter.sdk)),
+                  ),
                 ],
               ),
               Column(
@@ -117,6 +171,40 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
               ),
             )),
       ),
+    );
+  }
+
+  /// 返回
+  void _onBackPressed(BuildContext context) {
+    Navigator.pop(context);
+  }
+
+  /// 保存并返回
+  void _onSavePressed(BuildContext context) {
+    Navigator.pop(context, myPrinter);
+  }
+
+  void _showBottomSheet<T>(
+    BuildContext context,
+    String title,
+    T chooseKey,
+    List<Item<T>> data,
+    onItemClick,
+  ) {
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+      builder: (BuildContext context) {
+        return BottomSheetChooseListDialog<T>(
+            title: title,
+            defaultChooseKey: chooseKey,
+            data: data,
+            onItemClick: onItemClick);
+      },
     );
   }
 }

@@ -2,28 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 
 class MyPrinterPage extends StatefulWidget {
-  late List<MyPrinter> printerList = [];
 
-  MyPrinterPage({super.key});
+  final List<MyPrinter> initialPrinter;
+  final VoidCallback go2AddPrinter;
 
-  void addPrinter(MyPrinter printer) {
-    printerList.add(printer);
-  }
+  const MyPrinterPage({super.key,
+    required this.initialPrinter,
+    required this.go2AddPrinter
+  });
 
   @override
   State<MyPrinterPage> createState() => _MyPrinterPageState();
 }
 
 class _MyPrinterPageState extends State<MyPrinterPage> {
+  List<MyPrinter> printerList = [];
 
-  void setPrinterList(List<MyPrinter> printerList) {
+  @override
+  void initState() {
+    super.initState();
+    //对象引用
+    printerList = widget.initialPrinter;
+  }
+
+  // 删除项的方法
+  void _removeItem(int index) {
     setState(() {
-      widget.printerList = printerList;
+      printerList.removeAt(index);
     });
   }
 
   Widget _convertMyPrinterWidget() {
-    if (widget.printerList.isEmpty) {
+    if (printerList.isEmpty) {
       return Container(
         alignment: Alignment.center,
         child: const Text('先去添加一台打印机吧'),
@@ -31,13 +41,29 @@ class _MyPrinterPageState extends State<MyPrinterPage> {
     }
 
     return ListView.builder(
-        itemCount: widget.printerList.length,
+        itemCount: printerList.length,
         itemBuilder: (context, index) {
           return Card(
-            margin: const EdgeInsets.all(10),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Text('$index 号打印机'),
+            margin: const EdgeInsets.only(left: 10,top: 4,bottom: 4,right: 10),
+            child: InkWell(
+              onTap: () => widget.go2AddPrinter(),
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10,top: 4,bottom: 4,right: 0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.print,size: 16),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(printerList[index].name)),
+                    IconButton(
+                        onPressed: () => {
+                          _removeItem(index)
+                        },
+                        iconSize: 16,
+                        icon: const Icon(Icons.delete)
+                    )
+                  ],
+                ),
+              ),
             ),
           );
         });
