@@ -4,7 +4,7 @@ import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 class MyPrinterPage extends StatefulWidget {
 
   final List<MyPrinter> initialPrinter;
-  final VoidCallback go2AddPrinter;
+  final go2AddPrinter;
 
   const MyPrinterPage({super.key,
     required this.initialPrinter,
@@ -46,7 +46,7 @@ class _MyPrinterPageState extends State<MyPrinterPage> {
           return Card(
             margin: const EdgeInsets.only(left: 10,top: 4,bottom: 4,right: 10),
             child: InkWell(
-              onTap: () => widget.go2AddPrinter(),
+              onTap: () => widget.go2AddPrinter(printerList[index]),
               child: Padding(
                 padding: const EdgeInsets.only(left: 10,top: 4,bottom: 4,right: 0),
                 child: Row(

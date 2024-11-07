@@ -26,10 +26,10 @@ class _MainPageState extends State<MainPage> {
   }
 
   // 添加打印机
-  void _onAddPrinter({required BuildContext context}) async {
+  void _onAddPrinter({required BuildContext context, MyPrinter? printer}) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const ModifyPrinterPage()),
+      MaterialPageRoute(builder: (context) => ModifyPrinterPage(myPrinter: printer)),
     );
     if (result != null) {
       _onAddPrinterResult(myPrinter: result);
@@ -64,8 +64,8 @@ class _MainPageState extends State<MainPage> {
         children: [
           MyPrinterPage(
             initialPrinter: printer,
-            go2AddPrinter: () => {
-              _onAddPrinter(context: context)
+            go2AddPrinter: (printer) => {
+              _onAddPrinter(context: context,printer: printer)
             },
           ),
           // const ModifyPrinterPage(),
