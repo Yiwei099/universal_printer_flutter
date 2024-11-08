@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:label="PrinterFlutter"
-        android:name="${applicationName}"
+        android:name="com.example.universal_printer_flutter.BaseApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/bean/Item.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
+import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
 import 'package:universal_printer_flutter/utils/StringUtils.dart';
+import 'package:universal_printer_flutter/utils/UsbUtils.dart';
 import 'package:universal_printer_flutter/widget/ComOption.dart';
 
 import 'constant/Constant.dart';
 import 'utils/PrinterBeanUtils.dart';
 import 'widget/BottomSheetChooseDialog.dart';
+import 'widget/ChooseUsbDeviceDialog.dart';
 
 class ModifyPrinterPage extends StatefulWidget {
   final MyPrinter? myPrinter;
@@ -146,10 +149,15 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text('4. 打印机'),
-                  ComOption(
-                      name: '选择设备',
-                      value:
-                          PrinterBeanUtils.convertModelName(myPrinter.model)),
+                  InkWell(
+                    onTap:  () => {
+                      _showUsbDevicesBottomSheet(context: context, onItemClick: (item) => {})
+                    },
+                    child: ComOption(
+                        name: '选择设备',
+                        value:
+                            PrinterBeanUtils.convertModelName(myPrinter.model)),
+                  ),
                 ],
               ),
             ],
@@ -204,6 +212,25 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
             defaultChooseKey: chooseKey,
             data: data,
             onItemClick: onItemClick);
+      },
+    );
+  }
+
+  void _showUsbDevicesBottomSheet({
+    required BuildContext context,
+    String? chooseKey,
+    required onItemClick,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+      builder: (BuildContext context) {
+        return ChooseUsbDeviceDialog(
+            defaultChooseKey: chooseKey, onItemClick: onItemClick);
       },
     );
   }
