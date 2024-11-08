@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
-import 'package:universal_printer_flutter/utils/UsbUtils.dart';
+import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
 
 import 'ComChooseOption.dart';
 
@@ -25,7 +25,7 @@ class _ChooseUsbDeviceDialogState extends State<ChooseUsbDeviceDialog> {
   void initState() {
     super.initState();
     tempChooseKey = widget.defaultChooseKey ?? "";
-    UsbUtils.onRegisterUsbService().then((value) => {
+    ChannelUtils.onRegisterUsbService().then((value) => {
       _fetchUserDevices()
     }).catchError((onError) => {
       debugPrint(onError)
@@ -36,7 +36,7 @@ class _ChooseUsbDeviceDialogState extends State<ChooseUsbDeviceDialog> {
   void dispose() {
     super.dispose();
     _streamController.close();
-    UsbUtils.unRegisterUsbService().then((value) => {
+    ChannelUtils.unRegisterUsbService().then((value) => {
       debugPrint("unRegisterUsbService：$value")
     }).catchError((onError) => {
       debugPrint(onError)
@@ -45,7 +45,7 @@ class _ChooseUsbDeviceDialogState extends State<ChooseUsbDeviceDialog> {
 
   void _fetchUserDevices() async {
     _streamController.add(List.empty());
-    _streamController.add(await UsbUtils.getDevices());
+    _streamController.add(await ChannelUtils.getDevices());
   }
 
   @override

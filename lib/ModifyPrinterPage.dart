@@ -3,8 +3,9 @@ import 'package:universal_printer_flutter/bean/Item.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
 import 'package:universal_printer_flutter/utils/StringUtils.dart';
-import 'package:universal_printer_flutter/utils/UsbUtils.dart';
+import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
 import 'package:universal_printer_flutter/widget/ComOption.dart';
+import 'package:universal_printer_flutter/widget/chooseBleDeviceDialog.dart';
 
 import 'constant/Constant.dart';
 import 'utils/PrinterBeanUtils.dart';
@@ -151,7 +152,12 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                   const Text('4. 打印机'),
                   InkWell(
                     onTap:  () => {
-                      _showUsbDevicesBottomSheet(context: context, onItemClick: (item) => {})
+                      if(myPrinter.connect == ConnectType.usb){
+                        _showUsbDevicesBottomSheet(context: context, onItemClick: (item) => {})
+                      } else {
+                        _showBleDevicesBottomSheet(context: context, onItemClick: (item) => {})
+
+                      }
                     },
                     child: ComOption(
                         name: '选择设备',
@@ -230,6 +236,25 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
         return ChooseUsbDeviceDialog(
+            defaultChooseKey: chooseKey, onItemClick: onItemClick);
+      },
+    );
+  }
+
+  void _showBleDevicesBottomSheet({
+    required BuildContext context,
+    String? chooseKey,
+    required onItemClick,
+  }) {
+    showModalBottomSheet(
+      context: context,
+      useSafeArea: true,
+      useRootNavigator: true,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
+      builder: (BuildContext context) {
+        return ChooseBleDeviceDialog(
             defaultChooseKey: chooseKey, onItemClick: onItemClick);
       },
     );

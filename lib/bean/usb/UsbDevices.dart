@@ -14,6 +14,7 @@ class UsbDevices {
     required this.vendorId,
     required this.productId,
   });
+
   factory UsbDevices.fromJson(Map<String, dynamic> json) => _$UsbDevicesFromJson(json);
   Map<String, dynamic> toJson() => _$UsbDevicesToJson(this);
 }

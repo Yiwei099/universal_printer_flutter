@@ -1,4 +1,4 @@
-package com.example.universal_printer_flutter
+package com.example.universal_printer_flutter.utils
 
 import android.Manifest
 import android.bluetooth.BluetoothManager
@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.core.app.ActivityCompat
+import com.example.universal_printer_flutter.BaseApplication
 
 
 class BlueToothHelper private constructor() {
@@ -49,6 +50,10 @@ class BlueToothHelper private constructor() {
         }
 
         return false
+    }
+
+    fun isDiscovering():Boolean {
+        return bleAdapter?.isDiscovering ?: false
     }
 
     fun stopDiscovery():Boolean {

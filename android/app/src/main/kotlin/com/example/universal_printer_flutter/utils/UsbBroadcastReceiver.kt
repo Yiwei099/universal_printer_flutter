@@ -1,4 +1,4 @@
-package com.example.universal_printer_flutter
+package com.example.universal_printer_flutter.utils
 
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
@@ -9,6 +9,7 @@ import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.util.Log
+import com.example.universal_printer_flutter.BaseApplication
 
 /**
  * Created with Android Studio.

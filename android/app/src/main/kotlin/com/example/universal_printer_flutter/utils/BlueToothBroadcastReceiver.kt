@@ -1,4 +1,4 @@
-package com.example.universal_printer_flutter
+package com.example.universal_printer_flutter.utils
 
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.util.Log
+import com.example.universal_printer_flutter.BaseApplication
 
 class BlueToothBroadcastReceiver(
     private var listener: ((BluetoothDevice) -> Unit)
