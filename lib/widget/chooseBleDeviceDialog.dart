@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:universal_printer_flutter/bean/ble/BleDevices.dart';
 import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
 
@@ -27,26 +26,31 @@ class _ChooseBleDeviceDialogState extends State<ChooseBleDeviceDialog> {
   void initState() {
     super.initState();
     tempChooseKey = widget.defaultChooseKey ?? "";
-
+    //注册 Channel 回调
     ChannelUtils.setupMethodCallHandler((call) async {
       if (call.method == ChannelUtils.ON_DEVICE_FOUND) {
+        // Navigate 返回扫描到的设备
         setState(() {
           devices.add(BleDevices.fromJson(json.decode(call.arguments)));
         });
       } else if (call.method == ChannelUtils.BLE_DISCOVERY_STATE_CALL_BACK) {
+        // Navigate 返回的 BLE 扫描状态
         setState(() {
           scanning = call.arguments;
         });
       }
     });
 
+    //注册 BLE 服务
     ChannelUtils.onRegisterBleService()
         .then((value) async => {
+              //注册成功开始扫描
               await ChannelUtils.discoveryBleDevices(),
             })
         .catchError((onError) => {debugPrint(onError)});
   }
 
+  /// 开始扫描或停止扫描
   void _changeDiscovery() async {
     bool result = scanning;
     if (scanning) {
@@ -55,21 +59,26 @@ class _ChooseBleDeviceDialogState extends State<ChooseBleDeviceDialog> {
       result = await ChannelUtils.startDiscoveryBleDevices();
     }
 
-    setState(() {
-      scanning = result;
-    });
+    if(result != scanning) {
+      //状态改变成功才执行
+      setState(() {
+        scanning = result;
+      });
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    // _streamController.close();
+    //移除 Channel 回调
     ChannelUtils.clearMethodCallHandler();
+    // 销毁 BLE 服务
     ChannelUtils.unRegisterBleService()
         .then((value) => {debugPrint("unRegisterBleService：$value")})
         .catchError((onError) => {debugPrint(onError)});
   }
 
+  /// 将 ble 设备 转换为 Widget
   Widget _convertListDataToWidget() {
     if (devices.isEmpty) {
       return const Text('Not discovery bleTooth devices');
@@ -100,10 +109,8 @@ class _ChooseBleDeviceDialogState extends State<ChooseBleDeviceDialog> {
         mainAxisSize: MainAxisSize.max,
         children: [
           IconButton(
-              onPressed: () => {
-                _changeDiscovery()
-              },
-              icon: Icon(scanning ? Icons.stop : Icons.play_arrow),
+            onPressed: () => {_changeDiscovery()},
+            icon: Icon(scanning ? Icons.stop : Icons.play_arrow),
           ),
           const Expanded(
             child: Text(
