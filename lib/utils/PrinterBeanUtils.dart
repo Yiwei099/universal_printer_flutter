@@ -1,4 +1,5 @@
 import 'package:universal_printer_flutter/bean/Item.dart';
+import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 import 'package:universal_printer_flutter/constant/Constant.dart';
 
 class PrinterBeanUtils {
@@ -52,6 +53,30 @@ class PrinterBeanUtils {
     return [
       Item<SDK>(key: SDK.GPrinter, name: '佳博'),
       Item<SDK>(key: SDK.EPson, name: '爱普生'),
+    ];
+  }
+
+  static List<MyPrinter> getDefaultGPrinter() {
+    return [
+      MyPrinter(name: 'USB 打印机', model: CommandType.esc, connect: ConnectType.usb, sdk: SDK.GPrinter),
+      MyPrinter(name: 'Ble 打印机', model: CommandType.esc, connect: ConnectType.ble, sdk: SDK.GPrinter),
+      MyPrinter(name: 'Net 打印机', model: CommandType.esc, connect: ConnectType.wifi, sdk: SDK.GPrinter),
+
+      MyPrinter(name: 'USB 打印机', model: CommandType.tsc, connect: ConnectType.usb, sdk: SDK.GPrinter),
+      MyPrinter(name: 'Ble 打印机', model: CommandType.tsc, connect: ConnectType.ble, sdk: SDK.GPrinter),
+      MyPrinter(name: 'Net 打印机', model: CommandType.tsc, connect: ConnectType.wifi, sdk: SDK.GPrinter),
+    ];
+  }
+
+  static List<MyPrinter> getDefaultEPrinter() {
+    return [
+      MyPrinter(name: 'USB 打印机', model: CommandType.esc, connect: ConnectType.usb, sdk: SDK.EPson),
+      MyPrinter(name: 'Ble 打印机', model: CommandType.esc, connect: ConnectType.ble, sdk: SDK.EPson),
+      MyPrinter(name: 'Net 打印机', model: CommandType.esc, connect: ConnectType.wifi, sdk: SDK.EPson),
+
+      MyPrinter(name: 'USB 打印机', model: CommandType.tsc, connect: ConnectType.usb, sdk: SDK.EPson),
+      MyPrinter(name: 'Ble 打印机', model: CommandType.tsc, connect: ConnectType.ble, sdk: SDK.EPson),
+      MyPrinter(name: 'Net 打印机', model: CommandType.tsc, connect: ConnectType.wifi, sdk: SDK.EPson),
     ];
   }
 }

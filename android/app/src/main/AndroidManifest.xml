@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:label="PrinterFlutter"
+        android:label="开发者捷印"
         android:name="com.example.universal_printer_flutter.BaseApplication"
         android:icon="@mipmap/ic_launcher">
         <activity
