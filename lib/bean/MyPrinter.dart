@@ -1,8 +1,8 @@
 import 'package:universal_printer_flutter/constant/Constant.dart';
 
 class MyPrinter {
-  static final int TYPE_G = 1;
-  static final int TYPE_E = 2;
+  static const int TYPE_G = 1;
+  static const int TYPE_E = 2;
 
   String name; //打印机名称
   CommandType model; //指令模式

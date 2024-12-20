@@ -4,148 +4,81 @@ import 'package:universal_printer_flutter/utils/PrinterBeanUtils.dart';
 
 import 'constant/Constant.dart';
 
-class MyPrinterPage extends StatefulWidget {
-  final List<MyPrinter> initialPrinter;
-  final go2AddPrinter;
-
-  const MyPrinterPage(
-      {super.key, required this.initialPrinter, required this.go2AddPrinter});
-
-  @override
-  State<MyPrinterPage> createState() => _MyPrinterPageState();
-}
-
-class _MyPrinterPageState extends State<MyPrinterPage> {
-  List<MyPrinter> printerList = [];
-
-  @override
-  void initState() {
-    super.initState();
-    //对象引用
-    // printerList = widget.initialPrinter;
-
-    List<MyPrinter> gPrinterList = PrinterBeanUtils.getDefaultGPrinter();
-
-    if (gPrinterList.isNotEmpty) {
-      printerList.add(MyPrinter(type: MyPrinter.TYPE_G));
-      printerList.addAll(gPrinterList);
-    }
-
-    List<MyPrinter> ePrinterList = PrinterBeanUtils.getDefaultEPrinter();
-
-    if (ePrinterList.isNotEmpty) {
-      printerList.add(MyPrinter(type: MyPrinter.TYPE_E));
-      printerList.addAll(ePrinterList);
-    }
-  }
-
-  // 删除项的方法
-  void _removeItem(int index) {
-    setState(() {
-      printerList.removeAt(index);
-    });
-  }
-
-  Widget _convertMyPrinterWidget() {
-    if (printerList.isEmpty) {
-      return Container(
-        alignment: Alignment.center,
-        child: const Text('先去添加一台打印机吧'),
-      );
-    }
-
-    return ListView.builder(
-        itemCount: printerList.length,
-        itemBuilder: (context, index) {
-          return Card(
-            margin:
-                const EdgeInsets.only(left: 10, top: 4, bottom: 4, right: 10),
-            child: InkWell(
-              onTap: () => widget.go2AddPrinter(printerList[index]),
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 10, top: 4, bottom: 4, right: 0),
-                child: Row(
-                  children: [
-                    const Icon(Icons.print, size: 16),
-                    const SizedBox(width: 10),
-                    Expanded(child: Text(printerList[index].name)),
-                    IconButton(
-                        onPressed: () => {_removeItem(index)},
-                        iconSize: 16,
-                        icon: const Icon(Icons.delete))
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  Widget _convertPrinterListWidget() {
-    return ListView.builder(
-        itemCount: printerList.length,
-        itemBuilder: (context, index) {
-          return Padding(
-              padding:
-                  const EdgeInsets.only(left: 10, right: 10, top: 6, bottom: 6),
-              child: _convertPrinterClass(printerList[index]));
-        });
-  }
-
-  Widget _convertPrinterClass(MyPrinter item) {
-    if (item.type == MyPrinter.TYPE_G) {
-      return Row(
-        children: [
-          Container(
-              width: 4,
-              height: 20,
-              color: Colors.blue,
-              padding: const EdgeInsets.only(right: 10)),
-          const SizedBox(width: 6, height: 0),
-          const Text('佳博', style: TextStyle(fontSize: 18))
-        ],
-      );
-    } else if (item.type == MyPrinter.TYPE_E) {
-      return Row(
-        children: [
-          Container(
-              width: 4,
-              height: 20,
-              color: Colors.blue,
-              padding: const EdgeInsets.only(right: 10)),
-          const SizedBox(width: 6, height: 0),
-          const Text('爱普森', style: TextStyle(fontSize: 18))
-        ],
-      );
-    } else {
-      bool esc = item.model == CommandType.esc;
-      return Row(
-        children: [
-          Text(item.name, style: const TextStyle(fontSize: 18)),
-          const SizedBox(
-            width: 20,
-          ),
-          Text(
-            esc ? '小票' : '标签',
-            style: TextStyle(
-                backgroundColor: esc ? Colors.orange : Colors.green,
-                foreground: Paint()..color = Colors.white),
-          ),
-        ],
-      );
-    }
-  }
+class MyPrinterPage extends StatelessWidget {
+  const MyPrinterPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (printerList.isEmpty) {
-      return Container(
-        alignment: Alignment.center,
-        child: const Text('先去添加一台打印机吧'),
-      );
+    return _convertPrinterListWidget();
+  }
+
+  Widget _convertPrinterGridItem(MyPrinter printer, int index) {
+    String fullName = PrinterBeanUtils.convertModelName(printer.model);
+    IconData icons = Icons.usb;
+    if (printer.connect == ConnectType.ble) {
+      icons = Icons.bluetooth;
+    } else if (printer.connect == ConnectType.wifi) {
+      icons = Icons.wifi;
     } else {
-      return _convertPrinterListWidget();
+      icons = Icons.usb;
     }
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0), // 设置圆角半径
+        ),
+        elevation: 5.0, // 设置阴影高度
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              icons,
+              size: 26,
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            Text(
+              fullName,
+              style: const TextStyle(fontSize: 18),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _convertPrinterGridView(List<MyPrinter> printerList) {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3, // 每行显示2个网格项
+        mainAxisSpacing: 4,
+        crossAxisSpacing: 4,
+      ),
+      itemCount: printerList.length,
+      itemBuilder: (context, index) {
+        return _convertPrinterGridItem(printerList[index], index);
+      },
+    );
+  }
+
+  Widget _convertPrinterListWidget() {
+    List<Widget> tabs = const [Tab(text: '佳博'), Tab(text: '爱普森')];
+
+    List<Widget> tabsChildrenView = [
+      _convertPrinterGridView(PrinterBeanUtils.getDefaultGPrinter()),
+      _convertPrinterGridView(PrinterBeanUtils.getDefaultEPrinter())
+    ];
+
+    return DefaultTabController(
+        length: tabs.length,
+        child: Column(
+          children: [
+            TabBar(tabs: tabs),
+            Expanded(child: TabBarView(children: tabsChildrenView))
+          ],
+        ));
   }
 }
