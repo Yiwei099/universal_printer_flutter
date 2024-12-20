@@ -5,6 +5,7 @@ import 'package:universal_printer_flutter/bean/ble/BleDevices.dart';
 import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
 import 'package:universal_printer_flutter/utils/StringUtils.dart';
 import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
+import 'package:universal_printer_flutter/utils/ToastUtils.dart';
 import 'package:universal_printer_flutter/widget/ComOption.dart';
 import 'package:universal_printer_flutter/widget/chooseBleDeviceDialog.dart';
 
@@ -13,6 +14,8 @@ import 'utils/PrinterBeanUtils.dart';
 import 'widget/BottomSheetChooseDialog.dart';
 import 'widget/ChooseUsbDeviceDialog.dart';
 import 'dart:math';
+
+import 'widget/CodeBlock.dart';
 
 class ModifyPrinterPage extends StatefulWidget {
   final MyPrinter myPrinter;
@@ -27,6 +30,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
   UsbDevices? _devices = null;
   BleDevices? _bleDevices = null;
   String wifiDevicesIp = "192.168.";
+  bool showCode = false;
 
   final TextEditingController _controller = TextEditingController();
 
@@ -65,8 +69,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
             //   ),
             // ),
             backgroundColor: Colors.transparent,
-          )
-      ),
+          )),
       body: SizedBox.expand(
         child: _convertBodyView(context),
       ),
@@ -74,29 +77,65 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
   }
 
   Widget _convertBodyView(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () => {_bindPrinter(context)},
+            child: _convertPrinterStatus(),
+          ),
+          // const SizedBox(height: 10),
+          _covertActionView(),
+          const SizedBox(height: 10),
+          if (showCode) _convertCodeEgView(),
+        ],
+      ),
+    );
+  }
+
+  /// 操作按钮区域
+  Widget _covertActionView() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextButton.icon(
+          onPressed: () => {
+            setState(() {
+              showCode = !showCode;
+            })
+          },
+          label: const Text('详细实现'),
+          icon: const Icon(Icons.code_outlined, color: Colors.white),
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 20, left: 40, right: 40),
+              disabledForegroundColor: Colors.white,
+              disabledBackgroundColor: Colors.grey,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white),
+        ),
+        TextButton.icon(
+          onPressed: _isPrinterConnected() ? () => {} : null,
+          label: const Text('发起打印'),
+          icon: const Icon(Icons.send, color: Colors.white),
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 20, left: 40, right: 40),
+              disabledForegroundColor: Colors.white,
+              disabledBackgroundColor: Colors.grey,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white),
+        ),
+      ],
+    );
+  }
+
+  /// 示例代码
+  Widget _convertCodeEgView() {
     return Padding(
-        padding: const EdgeInsets.only(top: 70),
-        child: Column(
-          children: [
-            InkWell(
-              onTap: () => {_bindPrinter(context)},
-              child: _convertPrinterStatus(),
-            ),
-            const SizedBox(height: 20),
-            TextButton.icon(
-              onPressed: _isPrinterConnected() ? () => {} : null,
-              label: const Text('发起打印'),
-              icon: const Icon(Icons.send, color: Colors.white),
-              style: TextButton.styleFrom(
-                  padding: const EdgeInsets.only(
-                      top: 20, bottom: 20, left: 40, right: 40),
-                  disabledForegroundColor: Colors.white,
-                  disabledBackgroundColor: Colors.grey,
-                  backgroundColor: Colors.blue,
-                  foregroundColor: Colors.white),
-            )
-          ],
-        ));
+      padding: const EdgeInsets.all(20),
+      child: CodeBlock(code: StringUtils.getSampleCode(widget.myPrinter)),
+    );
   }
 
   /// 绑定打印机
@@ -104,14 +143,12 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     MyPrinter printer = widget.myPrinter;
     if (printer.connect == ConnectType.usb) {
       // usb
-      _showUsbDevicesBottomSheet(context: context, onItemClick: (item) => {
-        _onCacheUsbDevices(item)
-      });
+      _showUsbDevicesBottomSheet(
+          context: context, onItemClick: (item) => {_onCacheUsbDevices(item)});
     } else if (printer.connect == ConnectType.ble) {
       // 蓝牙
-      _showBleDevicesBottomSheet(context: context, onItemClick: (item) => {
-        _onCacheBleDevices(item)
-      });
+      _showBleDevicesBottomSheet(
+          context: context, onItemClick: (item) => {_onCacheBleDevices(item)});
     } else {
       // 局域网
       _showWifiBottomSheet(context: context);
@@ -182,10 +219,18 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
   }
 
   /// 缓存 IP 地址
-  void _onSaveWifiIp() {
+  void _onSaveWifiIp(BuildContext context) {
+    // if (!StringUtils.isIpAddress(_controller.text)) {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(content: Text('IP地址不正确')),
+    //   );
+    //   // ToastUtils.showToast('IP地址不正确');
+    //   return;
+    // }
     setState(() {
       wifiDevicesIp = _controller.text;
     });
+    _onBackPressed(context);
   }
 
   /// 缓存USB设备
@@ -232,7 +277,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                 ),
                 const SizedBox(height: 16.0),
                 TextButton(
-                  onPressed: () => {_onSaveWifiIp(), _onBackPressed(context)},
+                  onPressed: () => {_onSaveWifiIp(context)},
                   child: const Text('确定', style: TextStyle(color: Colors.blue)),
                 ),
               ],
@@ -252,7 +297,10 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      const Text('支持IPv6',style: TextStyle(fontSize: 12,color: Colors.red),)
+                      const Text(
+                        '支持IPv6',
+                        style: TextStyle(fontSize: 12, color: Colors.red),
+                      )
                     ]))
           ],
         );
