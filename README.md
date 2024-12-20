@@ -1,16 +1,6 @@
-# universal_printer_flutter
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# universal_printer_flutter(帮助开发者快速对接主流Esc/Tsc打印的演示项目)
+## 预览图
+![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/printer_list.dart)
+![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/printer_detail.dart)
+![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/get_usb_devices.dart)
+![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/get_ble_devices.dart)
