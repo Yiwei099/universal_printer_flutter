@@ -31,11 +31,11 @@ class _MainPageState extends State<MainPage> {
             title: const Text(
               '开发者捷印',
               style: TextStyle(
-                color: Colors.white,
+                color: Colors.black,
                 fontSize: 16,
               ),
             ),
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.transparent,
           )),
       body: IndexedStack(
         index: _currentIndex,

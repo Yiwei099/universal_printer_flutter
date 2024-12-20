@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:universal_printer_flutter/ModifyPrinterPage.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 import 'package:universal_printer_flutter/utils/PrinterBeanUtils.dart';
 
 import 'constant/Constant.dart';
+import 'dart:math';
 
 class MyPrinterPage extends StatelessWidget {
   const MyPrinterPage({super.key});
@@ -12,44 +14,29 @@ class MyPrinterPage extends StatelessWidget {
     return _convertPrinterListWidget();
   }
 
-  Widget _convertPrinterGridItem(MyPrinter printer, int index) {
-    String fullName = PrinterBeanUtils.convertModelName(printer.model);
-    IconData icons = Icons.usb;
-    if (printer.connect == ConnectType.ble) {
-      icons = Icons.bluetooth;
-    } else if (printer.connect == ConnectType.wifi) {
-      icons = Icons.wifi;
-    } else {
-      icons = Icons.usb;
-    }
-    return Padding(
-      padding: const EdgeInsets.all(10),
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0), // 设置圆角半径
-        ),
-        elevation: 5.0, // 设置阴影高度
+  /// 绘制容器视图 - TabView
+  Widget _convertPrinterListWidget() {
+    List<Widget> tabs = const [Tab(text: '佳博'), Tab(text: '爱普森')];
+    List<Widget> tabsChildrenView = [
+      _convertPrinterGridView(PrinterBeanUtils.getDefaultGPrinter()),
+      _convertPrinterGridView(PrinterBeanUtils.getDefaultEPrinter())
+    ];
+    return DefaultTabController(
+        length: tabs.length,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
-              icons,
-              size: 26,
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Text(
-              fullName,
-              style: const TextStyle(fontSize: 18),
-            )
+            TabBar(
+                indicatorColor: Colors.blue,
+                indicatorSize: TabBarIndicatorSize.tab,
+                labelColor: Colors.blue,
+                unselectedLabelColor: Colors.black,
+                tabs: tabs),
+            Expanded(child: TabBarView(children: tabsChildrenView))
           ],
-        ),
-      ),
-    );
+        ));
   }
 
+  /// 绘制列表宫格
   Widget _convertPrinterGridView(List<MyPrinter> printerList) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -59,26 +46,73 @@ class MyPrinterPage extends StatelessWidget {
       ),
       itemCount: printerList.length,
       itemBuilder: (context, index) {
-        return _convertPrinterGridItem(printerList[index], index);
+        return _convertPrinterGridItem(context, printerList[index], index);
       },
     );
   }
 
-  Widget _convertPrinterListWidget() {
-    List<Widget> tabs = const [Tab(text: '佳博'), Tab(text: '爱普森')];
+  /// 绘制列表 Item
+  Widget _convertPrinterGridItem(
+      BuildContext context, MyPrinter printer, int index) {
+    IconData icons = Icons.usb;
+    double angle = 0.0;
+    if (printer.connect == ConnectType.ble) {
+      icons = Icons.bluetooth;
+    } else if (printer.connect == ConnectType.wifi) {
+      icons = Icons.wifi;
+    } else {
+      icons = Icons.usb;
+      angle = pi / 2;
+    }
 
-    List<Widget> tabsChildrenView = [
-      _convertPrinterGridView(PrinterBeanUtils.getDefaultGPrinter()),
-      _convertPrinterGridView(PrinterBeanUtils.getDefaultEPrinter())
-    ];
-
-    return DefaultTabController(
-        length: tabs.length,
-        child: Column(
-          children: [
-            TabBar(tabs: tabs),
-            Expanded(child: TabBarView(children: tabsChildrenView))
-          ],
+    IconData icon2 = Icons.receipt_long_outlined;
+    if (printer.model == CommandType.tsc) {
+      icon2 = Icons.label_outline;
+    }
+    return Padding(
+        padding: const EdgeInsets.all(10),
+        child: InkWell(
+          onTap: () => {go2PrinterDetail(context, printer)},
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.0), // 设置圆角半径
+            ),
+            elevation: 5.0, // 设置阴影高度
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Transform.rotate(
+                  angle: angle,
+                  child: Icon(
+                    icons,
+                    size: 26,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Text('·', style: TextStyle(fontSize: 36)),
+                ),
+                Icon(
+                  icon2,
+                  size: 26,
+                ),
+              ],
+            ),
+          ),
         ));
+  }
+
+  /// 跳转到打印机详情
+  void go2PrinterDetail(BuildContext context, MyPrinter printer) {
+    // 传递参数
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ModifyPrinterPage(
+          myPrinter: printer,
+        ),
+      ),
+    );
   }
 }

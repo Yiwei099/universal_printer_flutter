@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/bean/Item.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
+import 'package:universal_printer_flutter/bean/ble/BleDevices.dart';
 import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
 import 'package:universal_printer_flutter/utils/StringUtils.dart';
 import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
@@ -11,42 +12,34 @@ import 'constant/Constant.dart';
 import 'utils/PrinterBeanUtils.dart';
 import 'widget/BottomSheetChooseDialog.dart';
 import 'widget/ChooseUsbDeviceDialog.dart';
+import 'dart:math';
 
 class ModifyPrinterPage extends StatefulWidget {
-  final MyPrinter? myPrinter;
+  final MyPrinter myPrinter;
 
-  const ModifyPrinterPage({super.key, this.myPrinter});
+  const ModifyPrinterPage({super.key, required this.myPrinter});
 
   @override
   State<StatefulWidget> createState() => _ModifyPrinterPageState();
 }
 
 class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
-  late MyPrinter myPrinter;
+  UsbDevices? _devices = null;
+  BleDevices? _bleDevices = null;
+  String wifiDevicesIp = "192.168.";
+
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    myPrinter =
-        widget.myPrinter ?? MyPrinter(name: StringUtils.getChineseString(3));
+    _controller.text = wifiDevicesIp;
   }
 
-  void _notifyPrinterConnect(ConnectType item) {
-    setState(() {
-      myPrinter.connect = item;
-    });
-  }
-
-  void _notifyPrinterCommand(CommandType item) {
-    setState(() {
-      myPrinter.model = item;
-    });
-  }
-
-  void _notifyPrinterSDK(SDK item) {
-    setState(() {
-      myPrinter.sdk = item;
-    });
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -57,134 +50,129 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
           preferredSize: const Size.fromHeight(40.0),
           child: AppBar(
             leading: IconButton(
-              iconSize: 18,
-              color: Colors.white,
+              iconSize: 24,
+              color: Colors.black,
               icon: const Icon(Icons.arrow_back_ios), // 自定义返回按钮图标
               onPressed: () => _onBackPressed(context),
             ),
-            centerTitle: true,
+            // centerTitle: true,
             titleSpacing: 0,
-            title: Text(
-              myPrinter.name.isNotEmpty ? myPrinter.name : '新建打印机',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-              ),
-            ),
-            backgroundColor: Colors.blue,
-          )),
-      body: Card(
-        margin: const EdgeInsets.all(10),
-        child: Padding(
-          padding: const EdgeInsets.all(10),
-          child: ListView(
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('1. 连接方式'),
-                  const SizedBox(height: 4),
-                  InkWell(
-                    onTap: () => {
-                      _showBottomSheet<ConnectType>(
-                          context,
-                          '选择连接方式',
-                          myPrinter.connect,
-                          PrinterBeanUtils.getConnectItemList(),
-                          (item) => {
-                                _notifyPrinterConnect(item),
-                                Navigator.pop(context)
-                              })
-                    },
-                    child: ComOption(
-                        name: '选择连接方式',
-                        value: PrinterBeanUtils.convertConnectName(
-                            myPrinter.connect)),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('2. 打印模式'),
-                  InkWell(
-                    onTap: () => {
-                      _showBottomSheet<CommandType>(
-                          context,
-                          '选择打印模式',
-                          myPrinter.model,
-                          PrinterBeanUtils.getModelItemList(),
-                          (item) => {
-                                _notifyPrinterCommand(item),
-                                Navigator.pop(context)
-                              })
-                    },
-                    child: ComOption(
-                      name: '选择打印模式',
-                      value: PrinterBeanUtils.convertModelName(myPrinter.model),
-                    ),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('3. SDK策略'),
-                  InkWell(
-                    onTap: () => {
-                      _showBottomSheet<SDK>(
-                          context,
-                          '选择SDK策略',
-                          myPrinter.sdk,
-                          PrinterBeanUtils.getSDKItemList(),
-                          (item) =>
-                              {_notifyPrinterSDK(item), Navigator.pop(context)})
-                    },
-                    child: ComOption(
-                        name: '选择SDK策略',
-                        value: PrinterBeanUtils.convertSDKName(myPrinter.sdk)),
-                  ),
-                ],
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('4. 打印机'),
-                  InkWell(
-                    onTap:  () => {
-                      if(myPrinter.connect == ConnectType.usb){
-                        _showUsbDevicesBottomSheet(context: context, onItemClick: (item) => {})
-                      } else {
-                        _showBleDevicesBottomSheet(context: context, onItemClick: (item) => {})
+            // title: const Text(
+            //   '打印机详情',
+            //   style: TextStyle(
+            //     color: Colors.black,
+            //     fontSize: 16,
+            //   ),
+            // ),
+            backgroundColor: Colors.transparent,
+          )
+      ),
+      body: SizedBox.expand(
+        child: _convertBodyView(context),
+      ),
+    );
+  }
 
-                      }
-                    },
-                    child: ComOption(
-                        name: '选择设备',
-                        value:
-                            PrinterBeanUtils.convertModelName(myPrinter.model)),
-                  ),
-                ],
-              ),
-            ],
+  Widget _convertBodyView(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.only(top: 70),
+        child: Column(
+          children: [
+            InkWell(
+              onTap: () => {_bindPrinter(context)},
+              child: _convertPrinterStatus(),
+            ),
+            const SizedBox(height: 20),
+            TextButton.icon(
+              onPressed: _isPrinterConnected() ? () => {} : null,
+              label: const Text('发起打印'),
+              icon: const Icon(Icons.send, color: Colors.white),
+              style: TextButton.styleFrom(
+                  padding: const EdgeInsets.only(
+                      top: 20, bottom: 20, left: 40, right: 40),
+                  disabledForegroundColor: Colors.white,
+                  disabledBackgroundColor: Colors.grey,
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white),
+            )
+          ],
+        ));
+  }
+
+  /// 绑定打印机
+  void _bindPrinter(BuildContext context) {
+    MyPrinter printer = widget.myPrinter;
+    if (printer.connect == ConnectType.usb) {
+      // usb
+      _showUsbDevicesBottomSheet(context: context, onItemClick: (item) => {
+        _onCacheUsbDevices(item)
+      });
+    } else if (printer.connect == ConnectType.ble) {
+      // 蓝牙
+      _showBleDevicesBottomSheet(context: context, onItemClick: (item) => {
+        _onCacheBleDevices(item)
+      });
+    } else {
+      // 局域网
+      _showWifiBottomSheet(context: context);
+    }
+  }
+
+  /// 是否已经设置好打印机 true-是
+  bool _isPrinterConnected() {
+    return (widget.myPrinter.connect == ConnectType.usb && _devices != null) ||
+        (widget.myPrinter.connect == ConnectType.ble && _bleDevices != null) ||
+        (widget.myPrinter.connect == ConnectType.wifi &&
+            StringUtils.isIpAddress(wifiDevicesIp));
+  }
+
+  /// 打印机状态
+  Widget _convertPrinterStatus() {
+    bool isConnect = _isPrinterConnected();
+    IconData statusIcon = Icons.usb;
+    double angle = 0.0;
+    if (widget.myPrinter.connect == ConnectType.ble) {
+      statusIcon = Icons.bluetooth;
+    } else if (widget.myPrinter.connect == ConnectType.wifi) {
+      statusIcon = Icons.wifi;
+    } else {
+      statusIcon = Icons.usb;
+      angle = pi / 2;
+    }
+    String tips = isConnect ? '已绑定' : '未绑定';
+    Color statusColor = isConnect ? Colors.blue : Colors.red;
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircleAvatar(
+          radius: 40,
+          backgroundColor: statusColor,
+          child: Transform.rotate(
+            angle: angle,
+            child: Icon(statusIcon, size: 34, color: Colors.white),
           ),
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
-        child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blue,
-            ),
-            onPressed: () => _onSavePressed(context),
-            child: const Text(
-              '保存并返回',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-              ),
+        Padding(
+            padding: const EdgeInsets.all(40),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  tips,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: isConnect ? Colors.green : Colors.red),
+                ),
+                const Text('···', style: TextStyle(fontSize: 20))
+              ],
             )),
-      ),
+        const CircleAvatar(
+            radius: 40,
+            backgroundColor: Colors.blue,
+            child: Icon(Icons.print_outlined, size: 34, color: Colors.white)),
+      ],
     );
   }
 
@@ -193,18 +181,29 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     Navigator.pop(context);
   }
 
-  /// 保存并返回
-  void _onSavePressed(BuildContext context) {
-    Navigator.pop(context, myPrinter);
+  /// 缓存 IP 地址
+  void _onSaveWifiIp() {
+    setState(() {
+      wifiDevicesIp = _controller.text;
+    });
   }
 
-  void _showBottomSheet<T>(
-    BuildContext context,
-    String title,
-    T chooseKey,
-    List<Item<T>> data,
-    onItemClick,
-  ) {
+  /// 缓存USB设备
+  void _onCacheUsbDevices(UsbDevices devices) {
+    setState(() {
+      _devices = devices;
+    });
+  }
+
+  /// 缓存蓝牙设备
+  void _onCacheBleDevices(BleDevices devices) {
+    setState(() {
+      _bleDevices = devices;
+    });
+  }
+
+  /// 显示设置 wifi 设备 ip 地址
+  void _showWifiBottomSheet({required BuildContext context}) {
     showModalBottomSheet(
       context: context,
       useSafeArea: true,
@@ -213,18 +212,57 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
-        return BottomSheetChooseListDialog<T>(
-            title: title,
-            defaultChooseKey: chooseKey,
-            data: data,
-            onItemClick: onItemClick);
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => {_onBackPressed(context)},
+                  child: const Text('取消'),
+                ),
+                const Expanded(
+                  child: Text(
+                    'Wifi 设备',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14),
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                TextButton(
+                  onPressed: () => {_onSaveWifiIp(), _onBackPressed(context)},
+                  child: const Text('确定', style: TextStyle(color: Colors.blue)),
+                ),
+              ],
+            ),
+            Padding(
+                padding: const EdgeInsets.only(
+                    top: 40, left: 40, right: 40, bottom: 100),
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      TextField(
+                        controller: _controller,
+                        decoration: const InputDecoration(
+                          labelText: '请输入IP地址',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text('支持IPv6',style: TextStyle(fontSize: 12,color: Colors.red),)
+                    ]))
+          ],
+        );
       },
     );
   }
 
+  /// 显示 USB 设备列表
   void _showUsbDevicesBottomSheet({
     required BuildContext context,
-    String? chooseKey,
     required onItemClick,
   }) {
     showModalBottomSheet(
@@ -235,15 +273,14 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
-        return ChooseUsbDeviceDialog(
-            defaultChooseKey: chooseKey, onItemClick: onItemClick);
+        return ChooseUsbDeviceDialog(onItemClick: onItemClick);
       },
     );
   }
 
+  /// 显示 蓝牙 设备列表
   void _showBleDevicesBottomSheet({
     required BuildContext context,
-    String? chooseKey,
     required onItemClick,
   }) {
     showModalBottomSheet(
@@ -254,8 +291,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
-        return ChooseBleDeviceDialog(
-            defaultChooseKey: chooseKey, onItemClick: onItemClick);
+        return ChooseBleDeviceDialog(onItemClick: onItemClick);
       },
     );
   }
