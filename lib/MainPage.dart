@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:universal_printer_flutter/AboutPage.dart';
 import 'package:universal_printer_flutter/MyPrinterPage.dart';
 
+import 'DarwingPage.dart';
 import 'ModifyPrinterPage.dart';
 import 'bean/MyPrinter.dart';
 
@@ -41,6 +43,8 @@ class _MainPageState extends State<MainPage> {
         index: _currentIndex,
         children: const [
           MyPrinterPage(),
+          DarwingPage(),
+          AboutPage(),
           // const ModifyPrinterPage(),
         ],
       ),
@@ -55,7 +59,7 @@ class _MainPageState extends State<MainPage> {
             label: '数据源',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+            icon: Icon(Icons.manage_accounts),
             label: '关于',
           ),
         ],

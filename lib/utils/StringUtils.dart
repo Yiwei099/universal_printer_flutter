@@ -108,4 +108,31 @@ printer.onDestroy()
     return '''''';
   }
 
+  static String getSampleCodePrintSupport() {
+    return '''
+仓库及更详细说明地址：
+https://github.com/Yiwei099/PrintSupport
+
+//必须
+com.github.Yiwei099.PrintSupport:libcommon:releaseVersion
+//只使用佳博SDK
+com.github.Yiwei099.PrintSupport:GPrinter:releaseVersion
+//只使用爱普森SDK
+com.github.Yiwei099.PrintSupport:Epson:releaseVersion
+//只是用必胜龙SDK
+com.github.Yiwei099.PrintSupport:Bixolon:releaseVersion
+//以上三个都使用
+com.github.Yiwei099.PrintSupport:releaseVersion
+    ''';
+  }
+
+  static String getSampleCodeDrawSupport() {
+    return '''
+仓库及更详细说明地址：
+https://github.com/Yiwei099/DrawingSupport
+
+com.github.Yiwei099:DrawingSupport:releaseVersion
+    ''';
+  }
+
 }
