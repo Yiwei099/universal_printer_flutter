@@ -148,4 +148,16 @@ class ChannelUtils {
     return result;
   }
   //</editor-fold desc="Ble方法">
+
+  //<editor-fold desc="绘制数据源相关">
+  static Future<bool> addDrawElement(String data) async {
+    bool result = false;
+    try {
+      result = await _channel.invokeMethod('addDrawElement', data);
+    }catch(e){
+      print(e);
+    }
+    return result;
+  }
+  //</editor-fold desc="绘制数据源相关">
 }

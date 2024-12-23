@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:universal_printer_flutter/bean/draw/element/TextElement.dart';
 import 'package:universal_printer_flutter/widget/number/NumberActionWidget.dart';
 import 'package:universal_printer_flutter/widget/radio/RadioGroupWidget.dart';
 
@@ -20,6 +23,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
   int alignment = 0;
   int fontSize = 16;
   final TextEditingController _lineSpacController = TextEditingController();
+  final TextEditingController textEditingController = TextEditingController();
 
   @override
   void initState() {
@@ -31,6 +35,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
   @override
   void dispose() {
     _lineSpacController.dispose();
+    textEditingController.dispose();
     super.dispose();
   }
 
@@ -38,22 +43,27 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
   Widget build(BuildContext context) {
     bool isText = _chooseDrawType == DrawType.text;
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisSize: MainAxisSize.max,
       children: [
         _convertWidgetHeader(),
-        Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(children: [
-              _convertDrawTypeWidget(),
-              const SizedBox(height: 20),
-              _convertLineSpacItem(),
-              if (isText) ... {
-                const SizedBox(height: 20),
-                _convertAlignmentType(),
-                const SizedBox(height: 20),
-                _convertFontSize(),
-              }
-            ]))
+        Expanded(
+            child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(children: [
+                  _convertDrawTypeWidget(),
+                  const SizedBox(height: 20),
+                  _convertLineSpacItem(),
+                  if (isText) ...{
+                    const SizedBox(height: 20),
+                    _convertInputTextItem(),
+                    const SizedBox(height: 20),
+                    _convertAlignmentType(),
+                    const SizedBox(height: 20),
+                    _convertFontSize(),
+                  },
+                  const SizedBox(height: 20),
+                  _convertActionBar(),
+                ])))
       ],
     );
   }
@@ -89,11 +99,34 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
         ),
         const SizedBox(height: 16.0),
         TextButton(
-          onPressed: () => {},
+          onPressed: () => {_buildElement()},
           child: const Text('确定', style: TextStyle(color: Colors.blue)),
         ),
       ],
     );
+  }
+
+  void _buildElement() {
+    switch (_chooseDrawType) {
+      case DrawType.text:
+        if (textEditingController.text.isEmpty) {
+          debugPrint('文本内容不能为空');
+          return;
+        }
+        int lineSpac = 10;
+        if (_lineSpacController.text.isNotEmpty) {
+          lineSpac = int.parse(_lineSpacController.text);
+        }
+
+        debugPrint(jsonEncode(TextElement(
+            text: textEditingController.text,
+            alignment: alignment,
+            fontSize: fontSize,
+            perLineSpac: lineSpac)));
+        break;
+      default:
+        break;
+    }
   }
 
   List<Widget> _convertTypeItem() {
@@ -144,6 +177,26 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     );
   }
 
+  Widget _convertInputTextItem() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        const Text('内容'),
+        const SizedBox(width: 80),
+        Expanded(
+            child: TextField(
+          textAlign: TextAlign.end,
+          controller: textEditingController,
+          keyboardType: TextInputType.number,
+          decoration: const InputDecoration(
+            labelText: '文本内容',
+            border: OutlineInputBorder(),
+          ),
+        ))
+      ],
+    );
+  }
+
   Widget _convertAlignmentType() {
     return RadioGroupWidget(
         itemList: [
@@ -173,6 +226,38 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
               fontSize = value;
             })
           },
+        ),
+      ],
+    );
+  }
+
+  Widget _convertActionBar() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        TextButton.icon(
+          onPressed: () => {},
+          label: const Text('元素(0)'),
+          icon: const Icon(Icons.list, color: Colors.white),
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 20, left: 40, right: 40),
+              disabledForegroundColor: Colors.white,
+              disabledBackgroundColor: Colors.grey,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white),
+        ),
+        TextButton.icon(
+          onPressed: () => {},
+          label: const Text('预览'),
+          icon: const Icon(Icons.build_circle_outlined, color: Colors.white),
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 20, left: 40, right: 40),
+              disabledForegroundColor: Colors.white,
+              disabledBackgroundColor: Colors.grey,
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white),
         ),
       ],
     );

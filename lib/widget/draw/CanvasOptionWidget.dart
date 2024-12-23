@@ -93,12 +93,18 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
     }
     return RadioGroupWidget(
         itemList: [
+          Item(key: -1, name: '自定义'),
           Item(key: 0, name: '80mm'),
           Item(key: 1, name: '58mm'),
         ],
         listener: (int value) {
           setState(() {
-            int newWidth = value == 0 ? 576 : 384;
+            int newWidth = 0;
+            if (value == 0) {
+              newWidth = 576;
+            } else if (value == 1) {
+              newWidth = 384;
+            }
             widget.canvas.maxWidth = newWidth;
             widthController.text = newWidth.toString();
           });

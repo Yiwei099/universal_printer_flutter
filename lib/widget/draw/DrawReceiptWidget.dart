@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
 import 'package:universal_printer_flutter/widget/draw/CanvasOptionWidget.dart';
-import 'package:universal_printer_flutter/widget/draw/DrawBottomSheetWidget.dart';
+import 'package:universal_printer_flutter/widget/draw/DrawElementWidget.dart';
 
 class DrawReceiptWidget extends StatefulWidget {
   const DrawReceiptWidget({super.key});
