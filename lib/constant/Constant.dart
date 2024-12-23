@@ -28,3 +28,10 @@ enum SDK {
   GPrinter, //佳博
   EPson, //爱普生
 }
+
+enum DrawType {
+  text, //文本
+  image, //图片
+  dashLine, //虚线
+  line, //分割线
+}

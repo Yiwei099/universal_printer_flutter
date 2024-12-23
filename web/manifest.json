@@ -1,6 +1,6 @@
 {
-    "name": "universal_printer_flutter",
-    "short_name": "universal_printer_flutter",
+    "name": "开发者捷印",
+    "short_name": "捷印",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
