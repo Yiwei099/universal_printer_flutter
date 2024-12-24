@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 
 import '../../bean/ble/BleDevices.dart';
@@ -24,13 +25,11 @@ class PrinterController extends GetxController {
   void setCurrentPrinter(MyPrinter printer) {
     if (printer.connect == ConnectType.wifi) {
       //获取已保存的IP地址
-      ShapedPreferencesUtils.instance
-          .getString(key: printer.id.toString(), defaultValue: '192.168.')
-          .then((value) => {
-                printer.wifiIp.value = value,
-                _currentPrinter.value = printer,
-                wifiIpController.text = value
-              });
+      String value = ShapedPreferencesUtils.getString(
+          key: printer.id.toString(), defaultValue: '192.168.');
+      printer.wifiIp.value = value;
+      _currentPrinter.value = printer;
+      wifiIpController.text = value;
     } else {
       _currentPrinter.value = printer;
     }
@@ -38,8 +37,7 @@ class PrinterController extends GetxController {
 
   void setWifiIp(String ip) {
     _currentPrinter.value.wifiIp.value = ip;
-    ShapedPreferencesUtils.instance
-        .putString(_currentPrinter.value.id.toString(), ip);
+    ShapedPreferencesUtils.putString(_currentPrinter.value.id.toString(), ip);
   }
 
   void cacheUsbDevices(UsbDevices devices) {

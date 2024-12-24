@@ -3,49 +3,64 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ShapedPreferencesUtils {
   //<editor-fold desc="单例的实现">
+  factory ShapedPreferencesUtils() => _instance;
   static final ShapedPreferencesUtils _instance =
-      ShapedPreferencesUtils._internal(); //唯一单例, _代表类私有,禁止外部直接访问
-  factory ShapedPreferencesUtils() =>
-      _getInstance(); //使用工厂构造方法，通过Test()获取类时，返回唯一实例
-  static ShapedPreferencesUtils get instance =>
-      _getInstance(); //通过静态变量instance获取实例
+      ShapedPreferencesUtils._internal();
 
-  static ShapedPreferencesUtils _getInstance() {
+  static late SharedPreferences _preferences;
+
+  static Future<ShapedPreferencesUtils> getInstance() async {
     //这里真正生成唯一实例
+    _preferences = await SharedPreferences.getInstance();
     return _instance;
   }
 
-  ShapedPreferencesUtils._internal() {
-    //命名构造函数
-    //初始化
-    // print('Channel 初始化啦');
-  }
+  ShapedPreferencesUtils._internal();
 
 //</editor-fold desc="单例的实现">
 
-  Future<SharedPreferences> _getSPInstance() async {
-    return await SharedPreferences.getInstance();
+  static Future<bool> putInt(String key, int value) {
+    return _preferences.setInt(key, value);
   }
 
-  void putInt(String key, int value) {
-    _getSPInstance().then((instance) async {
-      bool result = await instance.setInt(key, value);
-      debugPrint("putInt $key $value $result");
-    });
+  static Future<bool> putString(String key, String value) {
+    return _preferences.setString(key, value);
   }
 
-  Future<int> getInt({required String key,int defaultValue = 0}) async {
-    return (await _getSPInstance()).getInt(key) ?? defaultValue;
+  static Future<bool> putBool(String key, bool value) {
+    return _preferences.setBool(key, value);
   }
 
-  void putString(String key, String value) {
-    _getSPInstance().then((instance) async {
-      bool result = await instance.setString(key, value);
-      debugPrint("putString $key $value $result");
-    });
+  static Future<bool> putDouble(String key, double value) {
+    return _preferences.setDouble(key, value);
   }
 
-  Future<String> getString({required String key,String defaultValue = ''}) async {
-    return (await _getSPInstance()).getString(key) ?? defaultValue;
+  static putData<T>(String key, T value) {
+    String type = value.runtimeType.toString();
+    switch (type) {
+      case 'String':
+        putString(key, value as String);
+        break;
+      case 'int':
+        putInt(key, value as int);
+        break;
+      case 'bool':
+        putBool(key, value as bool);
+        break;
+      case 'double':
+        putDouble(key, value as double);
+        break;
+      default:
+        debugPrint('不支持的类型');
+        break;
+    }
+  }
+
+  static int getInt({required String key, int defaultValue = 0}) {
+    return _preferences.getInt(key) ?? defaultValue;
+  }
+
+  static String getString({required String key, String defaultValue = ''}) {
+    return _preferences.getString(key) ?? defaultValue;
   }
 }

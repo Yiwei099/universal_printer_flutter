@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/module/about/AboutScreen.dart';
 import 'package:universal_printer_flutter/module/printer/list/PrinterListScreen.dart';
+import 'package:universal_printer_flutter/utils/SharedPreferencesUtils.dart';
 
 import 'module/draw/DrawingScreen.dart';
-import 'module/printer/detail/PrinterDetailScreen.dart';
-import 'bean/MyPrinter.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -15,6 +14,12 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
+
+  @override
+  void initState() {
+    ShapedPreferencesUtils.getInstance();
+    super.initState();
+  }
 
   void _onItemTapped(int index) {
     setState(() {
