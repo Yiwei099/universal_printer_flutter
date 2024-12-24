@@ -58,25 +58,25 @@ class PrinterBeanUtils {
 
   static List<MyPrinter> getDefaultGPrinter() {
     return [
-      MyPrinter(name: 'USB 打印机', model: CommandType.esc, connect: ConnectType.usb, sdk: SDK.GPrinter),
-      MyPrinter(name: 'Ble 打印机', model: CommandType.esc, connect: ConnectType.ble, sdk: SDK.GPrinter),
-      MyPrinter(name: 'Net 打印机', model: CommandType.esc, connect: ConnectType.wifi, sdk: SDK.GPrinter),
+      MyPrinter(id: 0,name: 'USB 打印机', model: CommandType.esc, connect: ConnectType.usb, sdk: SDK.GPrinter),
+      MyPrinter(id: 1,name: 'Ble 打印机', model: CommandType.esc, connect: ConnectType.ble, sdk: SDK.GPrinter),
+      MyPrinter(id: 2,name: 'Net 打印机', model: CommandType.esc, connect: ConnectType.wifi, sdk: SDK.GPrinter),
 
-      MyPrinter(name: 'USB 打印机', model: CommandType.tsc, connect: ConnectType.usb, sdk: SDK.GPrinter),
-      MyPrinter(name: 'Ble 打印机', model: CommandType.tsc, connect: ConnectType.ble, sdk: SDK.GPrinter),
-      MyPrinter(name: 'Net 打印机', model: CommandType.tsc, connect: ConnectType.wifi, sdk: SDK.GPrinter),
+      MyPrinter(id: 3,name: 'USB 打印机', model: CommandType.tsc, connect: ConnectType.usb, sdk: SDK.GPrinter),
+      MyPrinter(id: 4,name: 'Ble 打印机', model: CommandType.tsc, connect: ConnectType.ble, sdk: SDK.GPrinter),
+      MyPrinter(id: 5,name: 'Net 打印机', model: CommandType.tsc, connect: ConnectType.wifi, sdk: SDK.GPrinter),
     ];
   }
 
   static List<MyPrinter> getDefaultEPrinter() {
     return [
-      MyPrinter(name: 'USB 打印机', model: CommandType.esc, connect: ConnectType.usb, sdk: SDK.EPson),
-      MyPrinter(name: 'Ble 打印机', model: CommandType.esc, connect: ConnectType.ble, sdk: SDK.EPson),
-      MyPrinter(name: 'Net 打印机', model: CommandType.esc, connect: ConnectType.wifi, sdk: SDK.EPson),
+      MyPrinter(id: 6,name: 'USB 打印机', model: CommandType.esc, connect: ConnectType.usb, sdk: SDK.EPson),
+      MyPrinter(id: 7,name: 'Ble 打印机', model: CommandType.esc, connect: ConnectType.ble, sdk: SDK.EPson),
+      MyPrinter(id: 8,name: 'Net 打印机', model: CommandType.esc, connect: ConnectType.wifi, sdk: SDK.EPson),
 
-      MyPrinter(name: 'USB 打印机', model: CommandType.tsc, connect: ConnectType.usb, sdk: SDK.EPson),
-      MyPrinter(name: 'Ble 打印机', model: CommandType.tsc, connect: ConnectType.ble, sdk: SDK.EPson),
-      MyPrinter(name: 'Net 打印机', model: CommandType.tsc, connect: ConnectType.wifi, sdk: SDK.EPson),
+      MyPrinter(id: 9,name: 'USB 打印机', model: CommandType.tsc, connect: ConnectType.usb, sdk: SDK.EPson),
+      MyPrinter(id: 10,name: 'Ble 打印机', model: CommandType.tsc, connect: ConnectType.ble, sdk: SDK.EPson),
+      MyPrinter(id: 11,name: 'Net 打印机', model: CommandType.tsc, connect: ConnectType.wifi, sdk: SDK.EPson),
     ];
   }
 }

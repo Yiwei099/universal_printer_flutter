@@ -5,20 +5,36 @@ import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 import '../../bean/ble/BleDevices.dart';
 import '../../bean/usb/UsbDevices.dart';
 import '../../constant/Constant.dart';
+import '../../utils/SharedPreferencesUtils.dart';
 import '../../utils/StringUtils.dart';
 
 class PrinterController extends GetxController {
-  final _currentPrinter = MyPrinter().obs;
-  var wifiIp = '192.168.'.obs;
+  final _currentPrinter = MyPrinter(id: 0).obs;
   final Rx<UsbDevices?> _devices = Rx(null);
   final Rx<BleDevices?> _bleDevices = Rx(null);
+  final TextEditingController wifiIpController = TextEditingController();
+  var showCode = false.obs;
+
+  @override
+  void onClose() {
+    wifiIpController.dispose();
+    super.onClose();
+  }
 
   void setCurrentPrinter(MyPrinter printer) {
-    _currentPrinter.value = printer;
+    ShapedPreferencesUtils.instance
+        .getString(key: printer.id.toString(), defaultValue: '192.168.')
+        .then((value) => {
+              printer.wifiIp.value = value,
+              _currentPrinter.value = printer,
+              wifiIpController.text = value
+            });
   }
 
   void setWifiIp(String ip) {
-    wifiIp.value = ip;
+    _currentPrinter.value.wifiIp.value = ip;
+    ShapedPreferencesUtils.instance
+        .putString(_currentPrinter.value.id.toString(), ip);
   }
 
   void cacheUsbDevices(UsbDevices devices) {
@@ -43,6 +59,15 @@ class PrinterController extends GetxController {
     return (printer.connect == ConnectType.usb && haveUsbDevices()) ||
         (printer.connect == ConnectType.ble && haveBleDevices()) ||
         (printer.connect == ConnectType.wifi &&
-            StringUtils.isIpAddress(wifiIp.value));
+            StringUtils.isIpAddress(printer.wifiIp.value));
+  }
+
+  void toggleShowCode() {
+    showCode.value = !showCode.value;
+  }
+
+  void saveWifiIp() {
+    setWifiIp(wifiIpController.text);
+    Get.back(); // 返回上一页
   }
 }

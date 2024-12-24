@@ -24,21 +24,17 @@ class ModifyPrinterPage extends StatefulWidget {
 
 class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
   late PrinterController controller;
-  final TextEditingController _controller = TextEditingController();
-  bool showCode = false;
-
 
   @override
   void initState() {
     controller = Get.put(PrinterController());
     controller.setCurrentPrinter(widget.myPrinter);
     super.initState();
-    _controller.text = controller.wifiIp.value;
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    Get.delete<PrinterController>();
     super.dispose();
   }
 
@@ -98,9 +94,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
       children: [
         TextButton.icon(
           onPressed: () => {
-            setState(() {
-              showCode = !showCode;
-            })
+            controller.toggleShowCode()
           },
           label: const Text('详细实现'),
           icon: const Icon(Icons.code_outlined, color: Colors.white),
@@ -130,11 +124,12 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
 
   /// 示例代码
   Widget _convertCodeEgView() {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      child: showCode
+    return Obx(() {
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        child: controller.showCode.value
             ? Column(
-          key: ValueKey<bool>(showCode),
+          key: ValueKey<bool>(controller.showCode.value),
           children: [
             Padding(
               padding: const EdgeInsets.all(20),
@@ -143,9 +138,11 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
             )
           ],
         )
-            : Container(key: ValueKey<bool>(showCode)
-      ),
-    );
+            : Container(key: ValueKey<bool>(controller.showCode.value)
+        ),
+      );
+    });
+
   }
 
   /// 绑定打印机
@@ -220,14 +217,6 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     Navigator.pop(context);
   }
 
-  /// 缓存 IP 地址
-  void _onSaveWifiIp(BuildContext context) {
-    setState(() {
-      controller.wifiIp.value = _controller.text;
-    });
-    _onBackPressed(context);
-  }
-
   /// 缓存USB设备
   void _onCacheUsbDevices(UsbDevices devices) {
     controller.cacheUsbDevices(devices);
@@ -268,7 +257,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                 ),
                 const SizedBox(height: 16.0),
                 TextButton(
-                  onPressed: () => {_onSaveWifiIp(context)},
+                  onPressed: () => {controller.saveWifiIp()},
                   child: const Text('确定', style: TextStyle(color: Colors.blue)),
                 ),
               ],
@@ -281,7 +270,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
-                        controller: _controller,
+                        controller: controller.wifiIpController,
                         decoration: const InputDecoration(
                           labelText: '请输入IP地址',
                           border: OutlineInputBorder(),
