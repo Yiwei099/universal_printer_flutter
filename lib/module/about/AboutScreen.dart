@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'utils/StringUtils.dart';
-import 'widget/CodeBlock.dart';
+import '../../utils/StringUtils.dart';
+import '../../widget/CodeBlock.dart';
 
 class AboutPage extends StatelessWidget {
   const AboutPage({super.key});

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:universal_printer_flutter/AboutPage.dart';
-import 'package:universal_printer_flutter/MyPrinterPage.dart';
+import 'package:universal_printer_flutter/module/about/AboutScreen.dart';
+import 'package:universal_printer_flutter/module/printer/list/PrinterListScreen.dart';
 
-import 'DarwingPage.dart';
-import 'ModifyPrinterPage.dart';
+import 'module/draw/DrawingScreen.dart';
+import 'module/printer/detail/PrinterDetailScreen.dart';
 import 'bean/MyPrinter.dart';
 
 class MainPage extends StatefulWidget {
@@ -14,7 +14,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {

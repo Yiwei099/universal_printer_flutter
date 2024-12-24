@@ -1,9 +1,11 @@
+
 import 'package:flutter/material.dart';
-import 'package:universal_printer_flutter/ModifyPrinterPage.dart';
+import 'package:get/get.dart';
+import 'package:universal_printer_flutter/module/printer/detail/PrinterDetailScreen.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 import 'package:universal_printer_flutter/utils/PrinterBeanUtils.dart';
 
-import 'constant/Constant.dart';
+import '../../../constant/Constant.dart';
 import 'dart:math';
 
 class MyPrinterPage extends StatelessWidget {
@@ -72,7 +74,7 @@ class MyPrinterPage extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.all(10),
         child: InkWell(
-          onTap: () => {go2PrinterDetail(context, printer)},
+          onTap: () => {go2PrinterDetail(printer)},
           child: Card(
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(15.0), // 设置圆角半径
@@ -104,15 +106,10 @@ class MyPrinterPage extends StatelessWidget {
   }
 
   /// 跳转到打印机详情
-  void go2PrinterDetail(BuildContext context, MyPrinter printer) {
+  void go2PrinterDetail(MyPrinter printer) {
     // 传递参数
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ModifyPrinterPage(
-          myPrinter: printer,
-        ),
-      ),
-    );
+    Get.to(ModifyPrinterPage(
+      myPrinter: printer,
+    ));
   }
 }

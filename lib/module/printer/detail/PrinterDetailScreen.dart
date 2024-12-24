@@ -1,21 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
-import 'package:universal_printer_flutter/bean/Item.dart';
+import 'package:get/get.dart';
 import 'package:universal_printer_flutter/bean/MyPrinter.dart';
 import 'package:universal_printer_flutter/bean/ble/BleDevices.dart';
 import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
+import 'package:universal_printer_flutter/module/printer/PrinterController.dart';
 import 'package:universal_printer_flutter/utils/StringUtils.dart';
-import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
-import 'package:universal_printer_flutter/utils/ToastUtils.dart';
-import 'package:universal_printer_flutter/widget/ComOption.dart';
 import 'package:universal_printer_flutter/widget/chooseBleDeviceDialog.dart';
 
-import 'constant/Constant.dart';
-import 'utils/PrinterBeanUtils.dart';
-import 'widget/BottomSheetChooseDialog.dart';
-import 'widget/ChooseUsbDeviceDialog.dart';
-import 'dart:math';
-
-import 'widget/CodeBlock.dart';
+import '../../../constant/Constant.dart';
+import '../../../widget/ChooseUsbDeviceDialog.dart';
+import '../../../widget/CodeBlock.dart';
 
 class ModifyPrinterPage extends StatefulWidget {
   final MyPrinter myPrinter;
@@ -27,17 +23,17 @@ class ModifyPrinterPage extends StatefulWidget {
 }
 
 class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
-  UsbDevices? _devices = null;
-  BleDevices? _bleDevices = null;
-  String wifiDevicesIp = "192.168.";
+  late PrinterController controller;
+  final TextEditingController _controller = TextEditingController();
   bool showCode = false;
 
-  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
+    controller = Get.put(PrinterController());
+    controller.setCurrentPrinter(widget.myPrinter);
     super.initState();
-    _controller.text = wifiDevicesIp;
+    _controller.text = controller.wifiIp.value;
   }
 
   @override
@@ -82,7 +78,9 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
         children: [
           InkWell(
             onTap: () => {_bindPrinter(context)},
-            child: _convertPrinterStatus(),
+            child: Obx((){
+              return _convertPrinterStatus();
+            }),
           ),
           // const SizedBox(height: 10),
           _covertActionView(),
@@ -115,7 +113,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
               foregroundColor: Colors.white),
         ),
         TextButton.icon(
-          onPressed: _isPrinterConnected() ? () => {} : null,
+          onPressed: controller.isPrinterConnected() ? () => {} : null,
           label: const Text('发起打印'),
           icon: const Icon(Icons.send, color: Colors.white),
           style: TextButton.styleFrom(
@@ -135,16 +133,18 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
       child: showCode
-          ? Column(
-        key: ValueKey<bool>(showCode),
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: CodeBlock(code: StringUtils.getSampleCode(widget.myPrinter)),
-          )
-        ],
-      )
-          : Container(key: ValueKey<bool>(showCode)),
+            ? Column(
+          key: ValueKey<bool>(showCode),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: CodeBlock(
+                  code: StringUtils.getSampleCode(widget.myPrinter)),
+            )
+          ],
+        )
+            : Container(key: ValueKey<bool>(showCode)
+      ),
     );
   }
 
@@ -165,17 +165,9 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     }
   }
 
-  /// 是否已经设置好打印机 true-是
-  bool _isPrinterConnected() {
-    return (widget.myPrinter.connect == ConnectType.usb && _devices != null) ||
-        (widget.myPrinter.connect == ConnectType.ble && _bleDevices != null) ||
-        (widget.myPrinter.connect == ConnectType.wifi &&
-            StringUtils.isIpAddress(wifiDevicesIp));
-  }
-
   /// 打印机状态
   Widget _convertPrinterStatus() {
-    bool isConnect = _isPrinterConnected();
+    bool isConnect = controller.isPrinterConnected();
     IconData statusIcon = Icons.usb;
     double angle = 0.0;
     if (widget.myPrinter.connect == ConnectType.ble) {
@@ -230,31 +222,20 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
 
   /// 缓存 IP 地址
   void _onSaveWifiIp(BuildContext context) {
-    // if (!StringUtils.isIpAddress(_controller.text)) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(content: Text('IP地址不正确')),
-    //   );
-    //   // ToastUtils.showToast('IP地址不正确');
-    //   return;
-    // }
     setState(() {
-      wifiDevicesIp = _controller.text;
+      controller.wifiIp.value = _controller.text;
     });
     _onBackPressed(context);
   }
 
   /// 缓存USB设备
   void _onCacheUsbDevices(UsbDevices devices) {
-    setState(() {
-      _devices = devices;
-    });
+    controller.cacheUsbDevices(devices);
   }
 
   /// 缓存蓝牙设备
   void _onCacheBleDevices(BleDevices devices) {
-    setState(() {
-      _bleDevices = devices;
-    });
+    controller.cacheBleDevices(devices);
   }
 
   /// 显示设置 wifi 设备 ip 地址
