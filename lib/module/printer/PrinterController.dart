@@ -22,13 +22,18 @@ class PrinterController extends GetxController {
   }
 
   void setCurrentPrinter(MyPrinter printer) {
-    ShapedPreferencesUtils.instance
-        .getString(key: printer.id.toString(), defaultValue: '192.168.')
-        .then((value) => {
-              printer.wifiIp.value = value,
-              _currentPrinter.value = printer,
-              wifiIpController.text = value
-            });
+    if (printer.connect == ConnectType.wifi) {
+      //获取已保存的IP地址
+      ShapedPreferencesUtils.instance
+          .getString(key: printer.id.toString(), defaultValue: '192.168.')
+          .then((value) => {
+                printer.wifiIp.value = value,
+                _currentPrinter.value = printer,
+                wifiIpController.text = value
+              });
+    } else {
+      _currentPrinter.value = printer;
+    }
   }
 
   void setWifiIp(String ip) {
