@@ -1,17 +1,17 @@
 
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
+import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionController.dart';
 
-import '../../bean/Item.dart';
-import '../radio/RadioGroupWidget.dart';
+import '../../../bean/Item.dart';
+import '../../../widget/radio/RadioGroupWidget.dart';
 
 class CanvasOptionWidget extends StatefulWidget {
   DrawCanvas canvas;
   Function(DrawCanvas canvas) callBack;
 
-  CanvasOptionWidget({super.key,required this.callBack,required this.canvas });
+  CanvasOptionWidget({super.key, required this.callBack, required this.canvas});
 
   @override
   State<CanvasOptionWidget> createState() =>
@@ -19,45 +19,18 @@ class CanvasOptionWidget extends StatefulWidget {
 }
 
 class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
-  TextEditingController widthController = TextEditingController();
-  TextEditingController heightController = TextEditingController();
-
-  TextEditingController topController = TextEditingController();
-  TextEditingController bottomController = TextEditingController();
-  TextEditingController endController = TextEditingController();
-  TextEditingController startController = TextEditingController();
+  late final CanvasOptionController controller;
 
   @override
   void initState() {
-    if (widget.canvas.maxWidth > 0) {
-      widthController.text = widget.canvas.maxWidth.toString();
-    }
-    if (widget.canvas.maxHeight > 0) {
-      heightController.text = widget.canvas.maxHeight.toString();
-    }
-    if (widget.canvas.topIndentation > 0) {
-      topController.text = widget.canvas.topIndentation.toString();
-    }
-    if (widget.canvas.bottomBlankHeight > 0) {
-      bottomController.text = widget.canvas.bottomBlankHeight.toString();
-    }
-    if (widget.canvas.startIndentation > 0) {
-      startController.text = widget.canvas.startIndentation.toString();
-    }
-    if (widget.canvas.endIndentation > 0) {
-      endController.text = widget.canvas.endIndentation.toString();
-    }
+    controller = Get.put(CanvasOptionController(
+        canvas: widget.canvas, callback: widget.callBack));
     super.initState();
   }
 
   @override
   void dispose() {
-    widthController.dispose();
-    heightController.dispose();
-    topController.dispose();
-    bottomController.dispose();
-    startController.dispose();
-    endController.dispose();
+    Get.delete<CanvasOptionController>();
     super.dispose();
   }
 
@@ -65,7 +38,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
   Widget build(BuildContext context) {
     return Column(children: [
       _convertWidgetHeader(),
-      Padding(
+      Expanded(child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(children: [
           _convertPageType(),
@@ -80,92 +53,82 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
           const SizedBox(height: 10),
           _convertFollowEffectState(),
         ]),
-      )
+      ))
     ]);
   }
 
   Widget _convertPageType() {
-    int defaultValue = -1;
-    if (widget.canvas.maxWidth == 576) {
-      defaultValue = 0;
-    } else if (widget.canvas.maxWidth == 384) {
-      defaultValue = 1;
-    }
-    return RadioGroupWidget(
-        itemList: [
-          Item(key: -1, name: '自定义'),
-          Item(key: 0, name: '80mm'),
-          Item(key: 1, name: '58mm'),
-        ],
-        listener: (int value) {
-          setState(() {
-            int newWidth = 0;
-            if (value == 0) {
-              newWidth = 576;
-            } else if (value == 1) {
-              newWidth = 384;
-            }
-            widget.canvas.maxWidth = newWidth;
-            widthController.text = newWidth.toString();
-          });
-        },
-        defaultValue: defaultValue,
-        hint: '小票宽度');
+    return Obx((){
+      int defaultValue = -1;
+      if (controller.canvas.maxWidth.value == 576) {
+        defaultValue = 0;
+      } else if (controller.canvas.maxWidth.value == 384) {
+        defaultValue = 1;
+      }
+      return RadioGroupWidget(
+          itemList: [
+            Item(key: -1, name: '自定义'),
+            Item(key: 0, name: '80mm'),
+            Item(key: 1, name: '58mm'),
+          ],
+          listener: (int value) {
+            controller.setPageType(value);
+          },
+          defaultValue: defaultValue,
+          hint: '小票宽度');
+    });
+
   }
 
   Widget _convertAlignmentType() {
-    return RadioGroupWidget(
-        itemList: [
-          Item(key: 0, name: '顶部'),
-          Item(key: 1, name: '居中'),
-          Item(key: 2, name: '底部'),
-          Item(key: 3, name: '分散'),
-        ],
-        listener: (int value) {
-          setState(() {
-            widget.canvas.gravity = value;
-          });
-        },
-        defaultValue: widget.canvas.gravity,
-        hint: '对齐方式');
+    return Obx((){
+      return RadioGroupWidget(
+          itemList: [
+            Item(key: 0, name: '顶部'),
+            Item(key: 1, name: '居中'),
+            Item(key: 2, name: '底部'),
+            Item(key: 3, name: '分散'),
+          ],
+          listener: (int value) {
+            controller.setAlignmentType(value);
+          },
+          defaultValue: controller.canvas.gravity.value,
+          hint: '对齐方式');
+    });
   }
 
   Widget _convertAliasState() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('抗锯齿'),
-        Switch(
-          value: widget.canvas.antiAlias,
-          onChanged: (value) => {
-            setState(() {
-              widget.canvas.antiAlias = value;
-            })
-          },
-          activeTrackColor: Colors.blue,
-          activeColor: Colors.white,
-        )
-      ],
-    );
+    return Obx((){
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('抗锯齿'),
+          Switch(
+            value: controller.canvas.antiAlias.value,
+            onChanged: (value) => {controller.setAntiAlias(value)},
+            activeTrackColor: Colors.blue,
+            activeColor: Colors.white,
+          )
+        ],
+      );
+    });
   }
 
   Widget _convertFollowEffectState() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('高度不足时终止绘制'),
-        Switch(
-          value: widget.canvas.followEffectItem,
-          onChanged: (value) => {
-            setState(() {
-              widget.canvas.followEffectItem = value;
-            })
-          },
-          activeTrackColor: Colors.blue,
-          activeColor: Colors.white,
-        )
-      ],
-    );
+    return Obx((){
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('高度不足时终止绘制'),
+          Switch(
+            value: controller.canvas.followEffectItem.value,
+            onChanged: (value) => {controller.setFollowEffect(value)},
+            activeTrackColor: Colors.blue,
+            activeColor: Colors.white,
+          )
+        ],
+      );
+    });
   }
 
   Widget _convertPadding() {
@@ -181,7 +144,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: topController,
+                controller: controller.topController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '上',
@@ -200,7 +163,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: endController,
+                controller: controller.endController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '右',
@@ -219,7 +182,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: bottomController,
+                controller: controller.bottomController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '下',
@@ -238,7 +201,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: startController,
+                controller: controller.startController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '左',
@@ -268,7 +231,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
           child: TextField(
             maxLength: 3,
             textAlign: TextAlign.center,
-            controller: widthController,
+            controller: controller.widthController,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               labelText: '宽度',
@@ -287,7 +250,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
           child: TextField(
             maxLength: 3,
             textAlign: TextAlign.center,
-            controller: heightController,
+            controller: controller.heightController,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               labelText: '高度',
@@ -307,7 +270,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
     return Row(
       children: [
         TextButton(
-          onPressed: () => {_onBackPressed()},
+          onPressed: () => {Get.back()},
           child: const Text('取消'),
         ),
         const Expanded(
@@ -319,41 +282,10 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
         ),
         const SizedBox(height: 16.0),
         TextButton(
-          onPressed: () => {
-            _cacheDataAndCallBack(),
-          },
+          onPressed: () => {controller.updateCanvas()},
           child: const Text('确定', style: TextStyle(color: Colors.blue)),
         ),
       ],
     );
-  }
-
-  void _cacheDataAndCallBack() {
-    if(widthController.text.isNotEmpty) {
-      widget.canvas.maxWidth = int.parse(widthController.text);
-    }
-    if(heightController.text.isNotEmpty) {
-      widget.canvas.maxHeight = int.parse(heightController.text);
-    }
-    if(startController.text.isNotEmpty) {
-      widget.canvas.startIndentation = double.parse(startController.text);
-    }
-    if(topController.text.isNotEmpty) {
-      widget.canvas.topIndentation = double.parse(topController.text);
-    }
-    if(endController.text.isNotEmpty) {
-      widget.canvas.endIndentation = double.parse(endController.text);
-    }
-    if(bottomController.text.isNotEmpty) {
-      widget.canvas.bottomBlankHeight = double.parse(bottomController.text);
-    }
-    debugPrint(jsonEncode(widget.canvas));
-
-    _onBackPressed();
-  }
-
-  /// 返回
-  void _onBackPressed() {
-    Navigator.pop(context);
   }
 }

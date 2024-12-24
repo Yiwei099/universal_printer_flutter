@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
-import 'package:universal_printer_flutter/widget/draw/CanvasOptionWidget.dart';
+import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionWidget.dart';
 import 'package:universal_printer_flutter/widget/draw/DrawElementWidget.dart';
 
 class DrawReceiptWidget extends StatefulWidget {

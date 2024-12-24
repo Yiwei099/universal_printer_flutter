@@ -1,31 +1,42 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:get/get.dart';
 
 part 'DrawCanvas.g.dart';
 
 @JsonSerializable()
 class DrawCanvas {
-  int maxWidth = 0; // 最大宽度
-  int maxHeight = 0; // 最大高度
+  RxInt maxWidth = 0.obs; // 最大宽度
+  RxInt maxHeight = 0.obs; // 最大高度
 
-  double topIndentation = 40.0; // 顶部距离
-  double startIndentation = 20.0; // 左边距离
-  double endIndentation = 20.0; // 右边距离
-  double bottomBlankHeight = 10.0; // 底部留白
-  bool antiAlias = false; // 抗锯齿
-  int gravity = 0; // 对齐方式
-  bool followEffectItem = true; //高度不足终止绘制
+  RxDouble topIndentation = 40.0.obs; // 顶部距离
+  RxDouble startIndentation = 20.0.obs; // 左边距离
+  RxDouble endIndentation = 20.0.obs; // 右边距离
+  RxDouble bottomBlankHeight = 10.0.obs; // 底部留白
+  RxBool antiAlias = false.obs; // 抗锯齿
+  RxInt gravity = 0.obs; // 对齐方式
+  RxBool followEffectItem = false.obs; // 高度不足终止绘制
 
   DrawCanvas({
-    this.maxWidth = 0,
-    this.maxHeight = 0,
-    this.topIndentation = 40.0,
-    this.startIndentation = 20.0,
-    this.endIndentation = 20.0,
-    this.bottomBlankHeight = 10.0,
-    this.antiAlias = false,
-    this.gravity = 0,
-    this.followEffectItem = false,
-  });
+    int maxWidth = 0,
+    int maxHeight = 0,
+    double topIndentation = 40.0,
+    double startIndentation = 20.0,
+    double endIndentation = 20.0,
+    double bottomBlankHeight = 10.0,
+    bool antiAlias = false,
+    int gravity = 0,
+    bool followEffectItem = false,
+  }) {
+    this.maxWidth.value = maxWidth;
+    this.maxHeight.value = maxHeight;
+    this.topIndentation.value = topIndentation;
+    this.startIndentation.value = startIndentation;
+    this.endIndentation.value = endIndentation;
+    this.bottomBlankHeight.value = bottomBlankHeight;
+    this.antiAlias.value = antiAlias;
+    this.gravity.value = gravity;
+    this.followEffectItem.value = followEffectItem;
+  }
 
   factory DrawCanvas.fromJson(Map<String, dynamic> json) =>
       _$DrawCanvasFromJson(json);
