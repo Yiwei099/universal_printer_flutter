@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
 import 'package:universal_printer_flutter/widget/draw/CanvasOptionWidget.dart';
@@ -10,7 +13,7 @@ class DrawReceiptWidget extends StatefulWidget {
   State<DrawReceiptWidget> createState() => _DrawReceiptWidgetState();
 }
 
-class _DrawReceiptWidgetState extends State<DrawReceiptWidget> {
+class _DrawReceiptWidgetState extends State<DrawReceiptWidget> with AutomaticKeepAliveClientMixin{
   late DrawCanvas _drawCanvas;
 
   @override
@@ -21,6 +24,7 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return _convertBodyWidget();
   }
 
@@ -51,8 +55,26 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget> {
             ),
           ),
         ),
+        Align(
+          alignment: Alignment.center,
+          child: _convertContainer(),
+        )
       ],
     );
+  }
+
+  Widget _convertContainer() {
+    try {
+      if (!Platform.isAndroid) {
+        return const Text('此平台暂不支持预览绘制效果');
+      } else {
+        return const SizedBox();
+      }
+    } catch(e) {
+      debugPrint('获取平台异常：${e.toString()}');
+      // web 报错： Unsupported operation: Platform._operatingSystem 据说要使用 kIsWeb
+      return const Text('此平台暂不支持预览绘制效果');
+    }
   }
 
   void _showOptionBottomSheet({required BuildContext context}) {
@@ -85,4 +107,7 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget> {
       },
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

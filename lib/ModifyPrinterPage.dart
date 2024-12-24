@@ -87,7 +87,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
           // const SizedBox(height: 10),
           _covertActionView(),
           const SizedBox(height: 10),
-          if (showCode) _convertCodeEgView(),
+          _convertCodeEgView(),
         ],
       ),
     );
@@ -132,9 +132,19 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
 
   /// 示例代码
   Widget _convertCodeEgView() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: CodeBlock(code: StringUtils.getSampleCode(widget.myPrinter)),
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      child: showCode
+          ? Column(
+        key: ValueKey<bool>(showCode),
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: CodeBlock(code: StringUtils.getSampleCode(widget.myPrinter)),
+          )
+        ],
+      )
+          : Container(key: ValueKey<bool>(showCode)),
     );
   }
 

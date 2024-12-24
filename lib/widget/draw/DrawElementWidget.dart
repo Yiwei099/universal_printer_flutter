@@ -41,7 +41,6 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
 
   @override
   Widget build(BuildContext context) {
-    bool isText = _chooseDrawType == DrawType.text;
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
@@ -53,14 +52,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
                   _convertDrawTypeWidget(),
                   const SizedBox(height: 20),
                   _convertLineSpacItem(),
-                  if (isText) ...{
-                    const SizedBox(height: 20),
-                    _convertInputTextItem(),
-                    const SizedBox(height: 20),
-                    _convertAlignmentType(),
-                    const SizedBox(height: 20),
-                    _convertFontSize(),
-                  },
+                  _convertTextElementParamWidget(),
                   const SizedBox(height: 20),
                   _convertActionBar(),
                 ])))
@@ -68,6 +60,35 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     );
   }
 
+  /// 绘制 文本组件专有组件
+  Widget _convertTextElementParamWidget() {
+    bool isText = _chooseDrawType == DrawType.text;
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 250),
+      transitionBuilder: (Widget child, Animation<double> animation) {
+        return SizeTransition(
+          sizeFactor: animation,
+          axisAlignment: 0.0, // 0.0 表示垂直方向
+          child: child,
+        );
+      },
+      child: isText
+          ? Column(
+              key: ValueKey<bool>(isText),
+              children: [
+                const SizedBox(height: 20),
+                _convertInputTextItem(),
+                const SizedBox(height: 20),
+                _convertAlignmentType(),
+                const SizedBox(height: 20),
+                _convertFontSize(),
+              ],
+            )
+          : Container(key: ValueKey<bool>(isText)),
+    );
+  }
+
+  /// 绘制元素类型
   Widget _convertDrawTypeWidget() {
     return Row(
       children: [
@@ -81,6 +102,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     );
   }
 
+  /// 绘制顶部操作栏
   Widget _convertWidgetHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -129,6 +151,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     }
   }
 
+  /// 绘制元素类型子项
   List<Widget> _convertTypeItem() {
     List<Widget> result = [];
     for (Item<DrawType> item in _drawTypeList) {
@@ -157,6 +180,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     return result;
   }
 
+  /// 绘制行距输入组件
   Widget _convertLineSpacItem() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -177,6 +201,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     );
   }
 
+  /// 绘制文本内容数组组件
   Widget _convertInputTextItem() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -197,6 +222,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     );
   }
 
+  /// 绘制文本对齐方式组件
   Widget _convertAlignmentType() {
     return RadioGroupWidget(
         itemList: [
@@ -213,6 +239,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
         hint: '对齐方式');
   }
 
+  /// 绘制字体大小组件
   Widget _convertFontSize() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -231,6 +258,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
     );
   }
 
+  /// 绘制底部操作栏
   Widget _convertActionBar() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
