@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../bean/Item.dart';
 
@@ -49,7 +50,7 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
           curve: Curves.linear,
           padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
           decoration: BoxDecoration(
-            color: isChoose ? Colors.blue : Colors.white,
+            color: isChoose ? Get.theme.primaryColor : Colors.white,
             borderRadius: BorderRadius.only(
               topLeft: i == 0 ? const Radius.circular(8) : Radius.zero,
               bottomLeft: i == 0 ? const Radius.circular(8) : Radius.zero,
@@ -61,10 +62,7 @@ class _RadioGroupWidgetState extends State<RadioGroupWidget> {
                   : Radius.zero,
             ),
           ),
-          child: AnimatedDefaultTextStyle(
-              style: TextStyle(color: isChoose ? Colors.white : Colors.black),
-              duration: const Duration(milliseconds: 300),
-              child: Text(item.name)),
+          child:Text(item.name,style: TextStyle(color: isChoose ? Colors.white : Colors.black,fontSize: 12),)
         ),
       ));
     }

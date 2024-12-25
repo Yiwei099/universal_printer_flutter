@@ -18,8 +18,4 @@ class AboutController extends GetxController {
     super.onInit();
     localThemeMode.value = ShapedPreferencesUtils.getInt(key: Constant.SP_THEME_MODE);
   }
-
-
-  @override
-  void onClose() {}
 }

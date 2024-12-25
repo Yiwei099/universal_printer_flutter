@@ -31,6 +31,7 @@ class _MainPageState extends State<MainPage> {
           child: AppBar(
             centerTitle: true,
             titleSpacing: 0,
+            backgroundColor: Colors.transparent,
             title: const Text(
               '开发者捷印',
               style: TextStyle(

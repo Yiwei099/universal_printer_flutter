@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
 
 class CanvasOptionController extends GetxController {
-  final DrawCanvas canvas;
-  final Function(DrawCanvas canvas) callback;
+  final DrawCanvas canvas = DrawCanvas();
+  // final Function(DrawCanvas canvas) callback;
 
-  CanvasOptionController({required this.callback, required this.canvas});
+  // CanvasOptionController({required this.callback, required this.canvas})
+
+
 
   final TextEditingController widthController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
@@ -68,7 +70,7 @@ class CanvasOptionController extends GetxController {
     if (bottomController.text.isNotEmpty) {
       canvas.bottomBlankHeight.value = double.parse(bottomController.text);
     }
-    callback(canvas);
+    // callback(canvas);
     Get.back();
   }
 

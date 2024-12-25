@@ -47,7 +47,6 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
           child: AppBar(
             leading: IconButton(
               iconSize: 24,
-              color: Colors.black,
               icon: const Icon(Icons.arrow_back_ios), // 自定义返回按钮图标
               onPressed: () => _onBackPressed(context),
             ),
@@ -258,7 +257,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                 const SizedBox(height: 16.0),
                 TextButton(
                   onPressed: () => {controller.saveWifiIp()},
-                  child: const Text('确定', style: TextStyle(color: Colors.blue)),
+                  child: const Text('确定'),
                 ),
               ],
             ),

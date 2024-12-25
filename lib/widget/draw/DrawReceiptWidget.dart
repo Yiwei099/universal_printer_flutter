@@ -1,8 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
+import 'package:get/get.dart';
+import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionController.dart';
 import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionWidget.dart';
 import 'package:universal_printer_flutter/widget/draw/DrawElementWidget.dart';
 
@@ -14,11 +14,11 @@ class DrawReceiptWidget extends StatefulWidget {
 }
 
 class _DrawReceiptWidgetState extends State<DrawReceiptWidget> with AutomaticKeepAliveClientMixin{
-  late DrawCanvas _drawCanvas;
+  late CanvasOptionController _canvasOptionController;
 
   @override
   void initState() {
-    _drawCanvas = DrawCanvas();
+    _canvasOptionController = Get.put(CanvasOptionController());
     super.initState();
   }
 
@@ -98,10 +98,7 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget> with AutomaticKee
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
       builder: (BuildContext context) {
-        return CanvasOptionWidget(
-          canvas: _drawCanvas,
-          callBack: (value) => {_drawCanvas = value},
-        );
+        return const CanvasOptionWidget();
       },
     );
   }

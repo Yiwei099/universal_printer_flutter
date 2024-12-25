@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:universal_printer_flutter/bean/draw/element/TextElement.dart';
 import 'package:universal_printer_flutter/widget/number/NumberActionWidget.dart';
 import 'package:universal_printer_flutter/widget/radio/RadioGroupWidget.dart';
@@ -122,7 +123,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
         const SizedBox(height: 16.0),
         TextButton(
           onPressed: () => {_buildElement()},
-          child: const Text('确定', style: TextStyle(color: Colors.blue)),
+          child: const Text('确定'),
         ),
       ],
     );
@@ -166,7 +167,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
           margin: const EdgeInsets.symmetric(horizontal: 8.0),
           padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
           decoration: BoxDecoration(
-            color: isChoose ? Colors.blue : Colors.white,
+            color: isChoose ? Get.theme.primaryColor : Colors.white,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Text(
@@ -272,7 +273,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
                   top: 20, bottom: 20, left: 40, right: 40),
               disabledForegroundColor: Colors.white,
               disabledBackgroundColor: Colors.grey,
-              backgroundColor: Colors.blue,
+              backgroundColor: Get.theme.primaryColor,
               foregroundColor: Colors.white),
         ),
         TextButton.icon(
@@ -284,7 +285,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
                   top: 20, bottom: 20, left: 40, right: 40),
               disabledForegroundColor: Colors.white,
               disabledBackgroundColor: Colors.grey,
-              backgroundColor: Colors.blue,
+              backgroundColor: Get.theme.primaryColor,
               foregroundColor: Colors.white),
         ),
       ],

@@ -8,10 +8,12 @@ import '../../../bean/Item.dart';
 import '../../../widget/radio/RadioGroupWidget.dart';
 
 class CanvasOptionWidget extends StatefulWidget {
-  DrawCanvas canvas;
-  Function(DrawCanvas canvas) callBack;
+  const CanvasOptionWidget({super.key});
 
-  CanvasOptionWidget({super.key, required this.callBack, required this.canvas});
+  // DrawCanvas canvas;
+  // Function(DrawCanvas canvas) callBack;
+
+  // CanvasOptionWidget({super.key, required this.callBack, required this.canvas});
 
   @override
   State<CanvasOptionWidget> createState() =>
@@ -19,19 +21,12 @@ class CanvasOptionWidget extends StatefulWidget {
 }
 
 class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
-  late final CanvasOptionController controller;
+  late final CanvasOptionController _controller;
 
   @override
   void initState() {
-    controller = Get.put(CanvasOptionController(
-        canvas: widget.canvas, callback: widget.callBack));
+    _controller = Get.find<CanvasOptionController>();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    Get.delete<CanvasOptionController>();
-    super.dispose();
   }
 
   @override
@@ -60,9 +55,9 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
   Widget _convertPageType() {
     return Obx((){
       int defaultValue = -1;
-      if (controller.canvas.maxWidth.value == 576) {
+      if (_controller.canvas.maxWidth.value == 576) {
         defaultValue = 0;
-      } else if (controller.canvas.maxWidth.value == 384) {
+      } else if (_controller.canvas.maxWidth.value == 384) {
         defaultValue = 1;
       }
       return RadioGroupWidget(
@@ -72,12 +67,11 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
             Item(key: 1, name: '58mm'),
           ],
           listener: (int value) {
-            controller.setPageType(value);
+            _controller.setPageType(value);
           },
           defaultValue: defaultValue,
           hint: '小票宽度');
     });
-
   }
 
   Widget _convertAlignmentType() {
@@ -90,9 +84,9 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
             Item(key: 3, name: '分散'),
           ],
           listener: (int value) {
-            controller.setAlignmentType(value);
+            _controller.setAlignmentType(value);
           },
-          defaultValue: controller.canvas.gravity.value,
+          defaultValue: _controller.canvas.gravity.value,
           hint: '对齐方式');
     });
   }
@@ -104,9 +98,9 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
         children: [
           const Text('抗锯齿'),
           Switch(
-            value: controller.canvas.antiAlias.value,
-            onChanged: (value) => {controller.setAntiAlias(value)},
-            activeTrackColor: Colors.blue,
+            value: _controller.canvas.antiAlias.value,
+            onChanged: (value) => {_controller.setAntiAlias(value)},
+            activeTrackColor: Get.theme.primaryColor,
             activeColor: Colors.white,
           )
         ],
@@ -121,9 +115,9 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
         children: [
           const Text('高度不足时终止绘制'),
           Switch(
-            value: controller.canvas.followEffectItem.value,
-            onChanged: (value) => {controller.setFollowEffect(value)},
-            activeTrackColor: Colors.blue,
+            value: _controller.canvas.followEffectItem.value,
+            onChanged: (value) => {_controller.setFollowEffect(value)},
+            activeTrackColor: Get.theme.primaryColor,
             activeColor: Colors.white,
           )
         ],
@@ -144,7 +138,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: controller.topController,
+                controller: _controller.topController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '上',
@@ -163,7 +157,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: controller.endController,
+                controller: _controller.endController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '右',
@@ -182,7 +176,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: controller.bottomController,
+                controller: _controller.bottomController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '下',
@@ -201,7 +195,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
               child: TextField(
                 maxLength: 2,
                 textAlign: TextAlign.center,
-                controller: controller.startController,
+                controller: _controller.startController,
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   labelText: '左',
@@ -231,7 +225,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
           child: TextField(
             maxLength: 3,
             textAlign: TextAlign.center,
-            controller: controller.widthController,
+            controller: _controller.widthController,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               labelText: '宽度',
@@ -250,7 +244,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
           child: TextField(
             maxLength: 3,
             textAlign: TextAlign.center,
-            controller: controller.heightController,
+            controller: _controller.heightController,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               labelText: '高度',
@@ -282,8 +276,8 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
         ),
         const SizedBox(height: 16.0),
         TextButton(
-          onPressed: () => {controller.updateCanvas()},
-          child: const Text('确定', style: TextStyle(color: Colors.blue)),
+          onPressed: () => {_controller.updateCanvas()},
+          child: const Text('确定'),
         ),
       ],
     );

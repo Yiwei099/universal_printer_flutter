@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class NumberActionWidget extends StatefulWidget {
   int value; // 默认值
@@ -34,7 +35,7 @@ class _NumberActionWidgetState extends State<NumberActionWidget> {
             onPressed: enableRemove ? () => {
               widget.listener(widget.value - 2)
             } : null,
-            icon: Icon(Icons.remove_circle, color: enableRemove ? Colors.blue : Colors.grey),),
+            icon: Icon(Icons.remove_circle, color: enableRemove ? Get.theme.primaryColor : Colors.grey),),
         const SizedBox(
           width: 10,
         ),
@@ -46,7 +47,7 @@ class _NumberActionWidgetState extends State<NumberActionWidget> {
             onPressed: enableAdd ? () => {
               widget.listener(widget.value + 2)
             } : null,
-            icon: Icon(Icons.add_circle, color: enableAdd ? Colors.blue : Colors.grey)),
+            icon: Icon(Icons.add_circle, color: enableAdd ? Get.theme.primaryColor : Colors.grey)),
       ],
     );
   }
