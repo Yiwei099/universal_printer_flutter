@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:universal_printer_flutter/bean/draw/element/TextElement.dart';
+import 'package:universal_printer_flutter/module/draw/source/ElementListWidget.dart';
 import 'package:universal_printer_flutter/widget/number/NumberActionWidget.dart';
 import 'package:universal_printer_flutter/widget/radio/RadioGroupWidget.dart';
 
@@ -100,10 +101,7 @@ class _DrawElementWidgetState extends State<DrawElementWidget> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextButton(
-          onPressed: () => {
-            _drawElementController.resetData(),
-            Get.back()
-          },
+          onPressed: () => {_drawElementController.resetData(), Get.back()},
           child: const Text('取消'),
         ),
         const Expanded(
@@ -235,7 +233,7 @@ class _DrawElementWidgetState extends State<DrawElementWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TextButton.icon(
-          onPressed: () => {},
+          onPressed: () => {_showElementListDialog()},
           label: Obx(() {
             return Text('元素(${_drawElementController.sourceList.length})');
           }),
@@ -261,6 +259,21 @@ class _DrawElementWidgetState extends State<DrawElementWidget> {
               foregroundColor: Colors.white),
         ),
       ],
+    );
+  }
+
+  void _showElementListDialog() {
+    if (_drawElementController.isEmptySource()) {
+      debugPrint('未添加元素');
+      return;
+    }
+    Get.bottomSheet(
+      const ElementListWidget(),
+      backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+      barrierColor: Colors.white24,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10), topRight: Radius.circular(10))),
     );
   }
 }

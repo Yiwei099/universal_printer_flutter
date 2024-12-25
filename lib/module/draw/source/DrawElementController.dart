@@ -81,6 +81,27 @@ class DrawElementController extends GetxController {
     _chooseDrawType.value = DrawType.text;
   }
 
+  void removeElement(dynamic element) {
+    _sourceList.remove(element);
+  }
+
+  void removeElementByIndex(int index) {
+    _sourceList.removeAt(index);
+  }
+
+  String getElementShowText(dynamic element) {
+    switch (element.runtimeType) {
+      case TextElement:
+        return element.text;
+      default:
+        return '';
+    }
+  }
+
+  bool isEmptySource() {
+    return sourceList.isEmpty;
+  }
+
   @override
   void onInit() {
     super.onInit();
