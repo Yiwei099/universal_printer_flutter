@@ -20,7 +20,7 @@
 ### 关于我
 ![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/about_me.png)
 ### 暗黑模式
-![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/dark_mode.jpg)
-![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/dark_mode_about.jpg)
+![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/dark_mode.png)
+![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/dark_mode_about.png)
 
 
