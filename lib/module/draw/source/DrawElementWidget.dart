@@ -7,37 +7,25 @@ import 'package:universal_printer_flutter/bean/draw/element/TextElement.dart';
 import 'package:universal_printer_flutter/widget/number/NumberActionWidget.dart';
 import 'package:universal_printer_flutter/widget/radio/RadioGroupWidget.dart';
 
-import '../../bean/Item.dart';
-import '../../constant/Constant.dart';
-import '../../utils/DrawBeanUtils.dart';
+import '../../../bean/Item.dart';
+import '../../../constant/Constant.dart';
+import '../../../utils/DrawBeanUtils.dart';
+import 'DrawElementController.dart';
 
-class DrawBottomSheetWidget extends StatefulWidget {
-  const DrawBottomSheetWidget({super.key});
+class DrawElementWidget extends StatefulWidget {
+  const DrawElementWidget({super.key});
 
   @override
-  State<DrawBottomSheetWidget> createState() => _DrawBottomSheetWidgetState();
+  State<DrawElementWidget> createState() => _DrawElementWidgetState();
 }
 
-class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
-  late List<Item<DrawType>> _drawTypeList;
-  late DrawType _chooseDrawType;
-  int alignment = 0;
-  int fontSize = 16;
-  final TextEditingController _lineSpacController = TextEditingController();
-  final TextEditingController textEditingController = TextEditingController();
+class _DrawElementWidgetState extends State<DrawElementWidget> {
+  late DrawElementController _drawElementController;
 
   @override
   void initState() {
-    _chooseDrawType = DrawType.text;
-    _drawTypeList = DrawBeanUtils.getDrawTypeList();
+    _drawElementController = Get.find<DrawElementController>();
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _lineSpacController.dispose();
-    textEditingController.dispose();
-    super.dispose();
   }
 
   @override
@@ -63,30 +51,32 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
 
   /// 绘制 文本组件专有组件
   Widget _convertTextElementParamWidget() {
-    bool isText = _chooseDrawType == DrawType.text;
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      transitionBuilder: (Widget child, Animation<double> animation) {
-        return SizeTransition(
-          sizeFactor: animation,
-          axisAlignment: 0.0, // 0.0 表示垂直方向
-          child: child,
-        );
-      },
-      child: isText
-          ? Column(
-              key: ValueKey<bool>(isText),
-              children: [
-                const SizedBox(height: 20),
-                _convertInputTextItem(),
-                const SizedBox(height: 20),
-                _convertAlignmentType(),
-                const SizedBox(height: 20),
-                _convertFontSize(),
-              ],
-            )
-          : Container(key: ValueKey<bool>(isText)),
-    );
+    return Obx(() {
+      return AnimatedSwitcher(
+        duration: const Duration(milliseconds: 250),
+        transitionBuilder: (Widget child, Animation<double> animation) {
+          return SizeTransition(
+            sizeFactor: animation,
+            axisAlignment: 0.0, // 0.0 表示垂直方向
+            child: child,
+          );
+        },
+        child: _drawElementController.isTextElement()
+            ? Column(
+                key: ValueKey<DrawType>(_drawElementController.chooseDrawType),
+                children: [
+                  const SizedBox(height: 20),
+                  _convertInputTextItem(),
+                  const SizedBox(height: 20),
+                  _convertAlignmentType(),
+                  const SizedBox(height: 20),
+                  _convertFontSize(),
+                ],
+              )
+            : Container(
+                key: ValueKey<DrawType>(_drawElementController.chooseDrawType)),
+      );
+    });
   }
 
   /// 绘制元素类型
@@ -110,7 +100,10 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TextButton(
-          onPressed: () => {_onBackPressed(context)},
+          onPressed: () => {
+            _drawElementController.resetData(),
+            Get.back()
+          },
           child: const Text('取消'),
         ),
         const Expanded(
@@ -122,60 +115,38 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
         ),
         const SizedBox(height: 16.0),
         TextButton(
-          onPressed: () => {_buildElement()},
+          onPressed: () => {_drawElementController.buildElement()},
           child: const Text('确定'),
         ),
       ],
     );
   }
 
-  void _buildElement() {
-    switch (_chooseDrawType) {
-      case DrawType.text:
-        if (textEditingController.text.isEmpty) {
-          debugPrint('文本内容不能为空');
-          return;
-        }
-        int lineSpac = 10;
-        if (_lineSpacController.text.isNotEmpty) {
-          lineSpac = int.parse(_lineSpacController.text);
-        }
-
-        debugPrint(jsonEncode(TextElement(
-            text: textEditingController.text,
-            alignment: alignment,
-            fontSize: fontSize,
-            perLineSpac: lineSpac)));
-        break;
-      default:
-        break;
-    }
-  }
-
   /// 绘制元素类型子项
   List<Widget> _convertTypeItem() {
     List<Widget> result = [];
-    for (Item<DrawType> item in _drawTypeList) {
-      bool isChoose = _chooseDrawType == item.key;
-      result.add(InkWell(
-        onTap: () {
-          setState(() {
-            _chooseDrawType = item.key;
-          });
-        },
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0),
-          padding: const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
-          decoration: BoxDecoration(
-            color: isChoose ? Get.theme.primaryColor : Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
+    for (Item<DrawType> item in _drawElementController.drawTypeList) {
+      result.add(Obx(() {
+        bool isChoose = _drawElementController.chooseDrawType == item.key;
+        return InkWell(
+          onTap: () {
+            _drawElementController.setChooseDrawType(item.key);
+          },
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 8.0),
+            padding:
+                const EdgeInsets.only(left: 8, right: 8, top: 8, bottom: 8),
+            decoration: BoxDecoration(
+              color: isChoose ? Get.theme.primaryColor : Colors.white,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Text(
+              item.name,
+              style: TextStyle(color: isChoose ? Colors.white : Colors.black),
+            ),
           ),
-          child: Text(
-            item.name,
-            style: TextStyle(color: isChoose ? Colors.white : Colors.black),
-          ),
-        ),
-      ));
+        );
+      }));
     }
 
     return result;
@@ -191,7 +162,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
         Expanded(
             child: TextField(
           textAlign: TextAlign.end,
-          controller: _lineSpacController,
+          controller: _drawElementController.lineSpacController,
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(
             labelText: '请输入行距',
@@ -212,7 +183,7 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
         Expanded(
             child: TextField(
           textAlign: TextAlign.end,
-          controller: textEditingController,
+          controller: _drawElementController.textEditingController,
           keyboardType: TextInputType.number,
           decoration: const InputDecoration(
             labelText: '文本内容',
@@ -225,38 +196,37 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
 
   /// 绘制文本对齐方式组件
   Widget _convertAlignmentType() {
-    return RadioGroupWidget(
-        itemList: [
-          Item(key: 0, name: '居左'),
-          Item(key: 1, name: '居中'),
-          Item(key: 2, name: '居右'),
-        ],
-        listener: (int value) {
-          setState(() {
-            alignment = value;
-          });
-        },
-        defaultValue: alignment,
-        hint: '对齐方式');
+    return Obx(() {
+      return RadioGroupWidget(
+          itemList: [
+            Item(key: 0, name: '居左'),
+            Item(key: 1, name: '居中'),
+            Item(key: 2, name: '居右'),
+          ],
+          listener: (int value) {
+            _drawElementController.setAlignment(value);
+          },
+          defaultValue: _drawElementController.alignment.value,
+          hint: '对齐方式');
+    });
   }
 
   /// 绘制字体大小组件
   Widget _convertFontSize() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        const Text('字号'),
-        NumberActionWidget(
-          value: fontSize,
-          min: 2,
-          listener: (int value) => {
-            setState(() {
-              fontSize = value;
-            })
-          },
-        ),
-      ],
-    );
+    return Obx(() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('字号'),
+          NumberActionWidget(
+            value: _drawElementController.fontSize.value,
+            min: 2,
+            listener: (int value) =>
+                {_drawElementController.setFontSize(value)},
+          ),
+        ],
+      );
+    });
   }
 
   /// 绘制底部操作栏
@@ -266,7 +236,9 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
       children: [
         TextButton.icon(
           onPressed: () => {},
-          label: const Text('元素(0)'),
+          label: Obx(() {
+            return Text('元素(${_drawElementController.sourceList.length})');
+          }),
           icon: const Icon(Icons.list, color: Colors.white),
           style: TextButton.styleFrom(
               padding: const EdgeInsets.only(
@@ -290,10 +262,5 @@ class _DrawBottomSheetWidgetState extends State<DrawBottomSheetWidget> {
         ),
       ],
     );
-  }
-
-  /// 返回
-  void _onBackPressed(BuildContext context) {
-    Navigator.pop(context);
   }
 }

@@ -33,6 +33,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
   Widget build(BuildContext context) {
     return Column(children: [
       _convertWidgetHeader(),
+      const SizedBox(height: 10),
       Expanded(child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(children: [

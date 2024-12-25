@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:universal_printer_flutter/widget/draw/DrawReceiptWidget.dart';
 
-import '../../widget/draw/DrawLabelWidget.dart';
+import 'DrawLabelWidget.dart';
+import 'DrawReceiptWidget.dart';
 
 class DarwingPage extends StatelessWidget {
   const DarwingPage({super.key});

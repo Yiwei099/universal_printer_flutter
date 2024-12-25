@@ -4,11 +4,6 @@ import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
 
 class CanvasOptionController extends GetxController {
   final DrawCanvas canvas = DrawCanvas();
-  // final Function(DrawCanvas canvas) callback;
-
-  // CanvasOptionController({required this.callback, required this.canvas})
-
-
 
   final TextEditingController widthController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
