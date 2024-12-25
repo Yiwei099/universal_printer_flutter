@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:universal_printer_flutter/MainPage.dart';
+import 'package:universal_printer_flutter/constant/Constant.dart';
 
 import 'utils/SharedPreferencesUtils.dart';
 
@@ -14,23 +15,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      title: '开发者捷印',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.light,
-      home: const MainPage(),
-    );
-    // return FutureBuilder(
-    //     future: ShapedPreferencesUtils.getInstance(),
-    //     builder: (context, snapshot) {
-    //       return GetMaterialApp(
-    //         title: '开发者捷印',
-    //         theme: ThemeData.light(),
-    //         darkTheme: ThemeData.dark(),
-    //         themeMode: ShapedPreferencesUtils.getInt(key: 'themeMode') == 0 ? ThemeMode.light : ThemeMode.dark,
-    //         home: const MainPage(),
-    //       );
-    //     });
+    return FutureBuilder(
+        future: ShapedPreferencesUtils.getInstance(),
+        builder: (context, snapshot) {
+          return GetMaterialApp(
+            title: '开发者捷印',
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: ShapedPreferencesUtils.getInt(key: Constant.SP_THEME_MODE) == 0 ? ThemeMode.light : ThemeMode.dark,
+            home: const MainPage(),
+          );
+        });
   }
 }

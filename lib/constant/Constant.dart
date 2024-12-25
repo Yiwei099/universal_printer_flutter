@@ -35,3 +35,9 @@ enum DrawType {
   dashLine, //虚线
   line, //分割线
 }
+
+class Constant {
+  static const String SP_THEME_MODE = 'Theme_mode';
+}
+
+

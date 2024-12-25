@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:universal_printer_flutter/module/about/AboutController.dart';
 import 'package:universal_printer_flutter/utils/SharedPreferencesUtils.dart';
 
 import '../../utils/StringUtils.dart';
@@ -15,6 +16,20 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
+  late AboutController controller;
+
+  @override
+  void initState() {
+    controller = Get.put(AboutController());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    Get.delete<AboutController>();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return _convertPrinterView();
@@ -55,15 +70,17 @@ class _AboutPageState extends State<AboutPage> {
     return Stack(
       children: [
         Positioned(
-            right: 10,
-            child: IconButton(
-                onPressed: () => {
-                  debugPrint('mode before = ${Get.isDarkMode}'),
-                  Get.changeThemeMode(Get.isDarkMode ? ThemeMode.light : ThemeMode.dark),
-                  debugPrint('mode after = ${Get.isDarkMode}')
-                },
-                icon:
-                Icon(Get.isDarkMode ? Icons.dark_mode : Icons.light_mode))),
+          right: 10,
+          child: IconButton(
+              onPressed: () => {
+                    controller.changeThemeMode(),
+                  },
+              icon: Obx(() {
+                return Icon(controller.localThemeMode.value == 1
+                    ? Icons.dark_mode
+                    : Icons.light_mode);
+              })),
+        ),
         Align(
           alignment: Alignment.center,
           child: ClipOval(
