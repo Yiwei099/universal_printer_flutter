@@ -22,10 +22,7 @@ class DarwingPage extends StatelessWidget {
         child: Column(
           children: [
             TabBar(
-                indicatorColor: Colors.blue,
                 indicatorSize: TabBarIndicatorSize.tab,
-                labelColor: Colors.blue,
-                unselectedLabelColor: Colors.black,
                 tabs: tabs),
             Expanded(child: TabBarView(children: tabsChildrenView))
           ],

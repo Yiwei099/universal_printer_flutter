@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:universal_printer_flutter/module/about/AboutScreen.dart';
 import 'package:universal_printer_flutter/module/printer/list/PrinterListScreen.dart';
 import 'package:universal_printer_flutter/utils/SharedPreferencesUtils.dart';
@@ -14,12 +16,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _currentIndex = 0;
-
-  @override
-  void initState() {
-    ShapedPreferencesUtils.getInstance();
-    super.initState();
-  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -38,11 +34,9 @@ class _MainPageState extends State<MainPage> {
             title: const Text(
               '开发者捷印',
               style: TextStyle(
-                color: Colors.black,
                 fontSize: 16,
               ),
             ),
-            backgroundColor: Colors.transparent,
           )),
       body: IndexedStack(
         index: _currentIndex,
@@ -69,7 +63,6 @@ class _MainPageState extends State<MainPage> {
           ),
         ],
         currentIndex: _currentIndex,
-        selectedItemColor: Colors.blue,
         onTap: _onItemTapped,
       ),
     );

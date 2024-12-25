@@ -36,7 +36,6 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget> with AutomaticKee
           right: 16, // 距离右侧的距离
           child: FloatingActionButton(
             onPressed: () => {_showOptionBottomSheet(context: context)},
-            backgroundColor: Colors.blue,
             child: const Icon(
               Icons.add,
               color: Colors.white,
@@ -48,7 +47,6 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget> with AutomaticKee
           left: 16, // 距离右侧的距离
           child: FloatingActionButton(
             onPressed: () => {_showCanvasBottomSheet(context: context)},
-            backgroundColor: Colors.blue,
             child: const Icon(
               Icons.receipt_long_sharp,
               color: Colors.white,
