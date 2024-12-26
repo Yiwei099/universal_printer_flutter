@@ -4,9 +4,14 @@ import 'package:universal_printer_flutter/MainPage.dart';
 import 'package:universal_printer_flutter/constant/Constant.dart';
 import 'package:universal_printer_flutter/utils/DBUtils.dart';
 
+import 'utils/PlatformHandlerUtils.dart';
 import 'utils/SharedPreferencesUtils.dart';
 
-void main() async{
+Future<void> main() async{
+  ShapedPreferencesUtils.getInstance();
+  PlatformHandlerUtils.getPlatformByHandler(androidCallBack:() async{
+    await DBUtil().initDB();
+  });
   runApp(const MyApp());
 }
 
@@ -16,7 +21,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // DBUtil().initDB();
+    //
     return FutureBuilder(
         future: ShapedPreferencesUtils.getInstance(),
         builder: (context, snapshot) {

@@ -7,6 +7,8 @@ import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionWidget.
 import 'package:universal_printer_flutter/module/draw/source/DrawElementController.dart';
 import 'package:universal_printer_flutter/module/draw/source/DrawElementWidget.dart';
 
+import '../../utils/PlatformHandlerUtils.dart';
+
 class DrawReceiptWidget extends StatefulWidget {
   const DrawReceiptWidget({super.key});
 
@@ -66,24 +68,19 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget>
   }
 
   Widget _convertContainer() {
-    try {
-      if (!Platform.isAndroid) {
-        return const Text('此平台暂不支持预览绘制效果');
-      } else {
-        return const SizedBox();
-      }
-    } catch (e) {
-      debugPrint('获取平台异常：${e.toString()}');
-      // web 报错： Unsupported operation: Platform._operatingSystem 据说要使用 kIsWeb
+    return PlatformHandlerUtils.getPlatformByHandlerAsync<Widget>(
+        androidCallBack: () {
+      return const SizedBox();
+    }, defaultCallBack: () {
       return const Text('此平台暂不支持预览绘制效果');
-    }
+    });
   }
 
   void _showOptionBottomSheet({required BuildContext context}) {
     Get.bottomSheet(
       const DrawElementWidget(),
       backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
-      barrierColor: Get.isDarkMode ? Colors.white24 : Colors.transparent,
+      barrierColor: Colors.white54,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
@@ -94,7 +91,7 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget>
     Get.bottomSheet(
       const CanvasOptionWidget(),
       backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
-      barrierColor: Get.isDarkMode ? Colors.white24 : Colors.transparent,
+      barrierColor: Colors.white54,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
