@@ -23,12 +23,12 @@ class ModifyPrinterPage extends StatefulWidget {
 }
 
 class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
-  late PrinterController controller;
+  late PrinterController _controller;
 
   @override
   void initState() {
-    controller = Get.put(PrinterController());
-    controller.setCurrentPrinter(widget.myPrinter);
+    _controller = Get.put(PrinterController());
+    _controller.setCurrentPrinter(widget.myPrinter);
     super.initState();
   }
 
@@ -93,7 +93,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
       children: [
         TextButton.icon(
           onPressed: () => {
-            controller.toggleShowCode()
+            _controller.toggleShowCode()
           },
           label: const Text('详细实现'),
           icon: const Icon(Icons.code_outlined, color: Colors.white),
@@ -106,7 +106,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
               foregroundColor: Colors.white),
         ),
         TextButton.icon(
-          onPressed: controller.isPrinterConnected() ? () => {} : null,
+          onPressed: _controller.isPrinterConnected() ? () => {} : null,
           label: const Text('发起打印'),
           icon: const Icon(Icons.send, color: Colors.white),
           style: TextButton.styleFrom(
@@ -126,9 +126,9 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     return Obx(() {
       return AnimatedSwitcher(
         duration: const Duration(milliseconds: 250),
-        child: controller.showCode.value
+        child: _controller.showCode.value
             ? Column(
-          key: ValueKey<bool>(controller.showCode.value),
+          key: ValueKey<bool>(_controller.showCode.value),
           children: [
             Padding(
               padding: const EdgeInsets.all(20),
@@ -137,7 +137,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
             )
           ],
         )
-            : Container(key: ValueKey<bool>(controller.showCode.value)
+            : Container(key: ValueKey<bool>(_controller.showCode.value)
         ),
       );
     });
@@ -163,7 +163,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
 
   /// 打印机状态
   Widget _convertPrinterStatus() {
-    bool isConnect = controller.isPrinterConnected();
+    bool isConnect = _controller.isPrinterConnected();
     IconData statusIcon = Icons.usb;
     double angle = 0.0;
     if (widget.myPrinter.connect == ConnectType.ble) {
@@ -218,12 +218,12 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
 
   /// 缓存USB设备
   void _onCacheUsbDevices(UsbDevices devices) {
-    controller.cacheUsbDevices(devices);
+    _controller.cacheUsbDevices(devices);
   }
 
   /// 缓存蓝牙设备
   void _onCacheBleDevices(BleDevices devices) {
-    controller.cacheBleDevices(devices);
+    _controller.cacheBleDevices(devices);
   }
 
   /// 显示设置 wifi 设备 ip 地址
@@ -256,7 +256,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                 ),
                 const SizedBox(height: 16.0),
                 TextButton(
-                  onPressed: () => {controller.saveWifiIp()},
+                  onPressed: () => {_controller.saveWifiIp()},
                   child: const Text('确定'),
                 ),
               ],
@@ -269,7 +269,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       TextField(
-                        controller: controller.wifiIpController,
+                        controller: _controller.wifiIpController,
                         decoration: const InputDecoration(
                           labelText: '请输入IP地址',
                           border: OutlineInputBorder(),
