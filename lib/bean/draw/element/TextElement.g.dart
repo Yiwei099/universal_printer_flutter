@@ -7,6 +7,7 @@ part of 'TextElement.dart';
 // **************************************************************************
 
 TextElement _$TextElementFromJson(Map<String, dynamic> json) => TextElement(
+      id: (json['id'] as num?)?.toInt(),
       text: json['text'] as String,
       alignment: (json['alignment'] as num?)?.toInt() ?? 0,
       fontSize: (json['fontSize'] as num?)?.toInt() ?? 16,
@@ -16,6 +17,7 @@ TextElement _$TextElementFromJson(Map<String, dynamic> json) => TextElement(
 
 Map<String, dynamic> _$TextElementToJson(TextElement instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'text': instance.text,
       'alignment': instance.alignment,
       'fontSize': instance.fontSize,

@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:universal_printer_flutter/MainPage.dart';
 import 'package:universal_printer_flutter/constant/Constant.dart';
+import 'package:universal_printer_flutter/utils/DBUtils.dart';
 
 import 'utils/SharedPreferencesUtils.dart';
 
-void main() {
+void main() async{
   runApp(const MyApp());
 }
 
@@ -15,6 +16,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // DBUtil().initDB();
     return FutureBuilder(
         future: ShapedPreferencesUtils.getInstance(),
         builder: (context, snapshot) {

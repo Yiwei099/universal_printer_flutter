@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import '../../../bean/Item.dart';
 import '../../../bean/draw/element/TextElement.dart';
 import '../../../constant/Constant.dart';
+import '../../../utils/DBUtils.dart';
 import '../../../utils/DrawBeanUtils.dart';
 
 class DrawElementController extends GetxController {
@@ -67,18 +68,24 @@ class DrawElementController extends GetxController {
     }
   }
 
-  void _cacheElement(dynamic element) {
+  void _cacheElement(dynamic element) async{
     _sourceList.add(element);
+    // await DBUtil().daoDrawElement.insertElement(element);
     debugPrint(jsonEncode(element));
     resetData();
   }
 
-  void resetData() {
+  void resetData() async{
     alignment.value = 0;
     fontSize.value = 16;
     lineSpacController.text = '';
     textEditingController.text = '';
     _chooseDrawType.value = DrawType.text;
+
+    // DBUtil().daoDrawElement.queryAllElement().then((value) => {
+      // _sourceList.value = value,
+    //   debugPrint(jsonEncode(value))
+    // });
   }
 
   void removeElement(dynamic element) {
