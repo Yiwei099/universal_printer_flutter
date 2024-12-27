@@ -23,5 +23,7 @@
 ### 暗黑模式
 ![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/dark_mode.png)
 ![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/dark_mode_about.png)
+### 联系我
+![Image Text](https://github.com/Yiwei099/universal_printer_flutter/blob/dev/preview/we_chat.jpg)
 
 

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
+import com.example.universal_printer_flutter.provide.ReceiptProvide
 import com.example.universal_printer_flutter.utils.BlueToothBroadcastReceiver
 import com.example.universal_printer_flutter.utils.BlueToothHelper
 import com.example.universal_printer_flutter.utils.PermissionUtil
@@ -35,6 +36,8 @@ class MainActivity : FlutterActivity() {
         const val START_DISCOVERY_BLE_DEVICES = "startDiscoveryBleDevices"
         const val SCAN_BLE_DEVICES_RESULT = "scanBleDevicesResult"
         const val BLE_GET_DISCOVERY_STATE = "bleDiscoveryStateCallBack"
+        const val BUILD_RECEIPT = "buildReceipt"
+        const val BUILD_LABEL = "buildLabel"
 
         const val REQUEST_CODE_BLE_PERMISSION = 0x0A1
     }
@@ -118,6 +121,12 @@ class MainActivity : FlutterActivity() {
                     result.success(discovering)
                 }
 
+                BUILD_RECEIPT -> {
+                    Log.d(TAG, "预览小票")
+                    result.success(ReceiptProvide().startBuild());
+                }
+
+                BUILD_LABEL -> {}
                 else -> result.notImplemented()
             }
         }

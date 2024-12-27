@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:universal_printer_flutter/module/draw/canvas/canvas_option_controller.dart';
@@ -6,6 +8,7 @@ import 'package:universal_printer_flutter/module/draw/source/draw_element_contro
 import 'package:universal_printer_flutter/module/draw/source/draw_element_widget.dart';
 
 import '../../utils/platform_handler_utils.dart';
+import 'draw_controller.dart';
 
 class DrawReceiptWidget extends StatefulWidget {
   const DrawReceiptWidget({super.key});
@@ -18,9 +21,11 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget>
     with AutomaticKeepAliveClientMixin {
   late CanvasOptionController _canvasOptionController;
   late DrawElementController _drawElementController;
+  late DrawController _drawerController;
 
   @override
   void initState() {
+    _drawerController = Get.put(DrawController());
     _canvasOptionController = Get.put(CanvasOptionController());
     _drawElementController = Get.put(DrawElementController());
     super.initState();
@@ -68,7 +73,13 @@ class _DrawReceiptWidgetState extends State<DrawReceiptWidget>
   Widget _convertContainer() {
     return PlatformHandlerUtils.getPlatformByHandlerAsync<Widget>(
         androidCallBack: () {
-      return const SizedBox();
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Obx(() {
+          return _drawerController.bitmapArray.isNotEmpty ? Image.memory(
+              Uint8List.fromList(_drawerController.bitmapArray)) : const SizedBox();
+        }),
+      );
     }, defaultCallBack: () {
       return const Text('此平台暂不支持预览绘制效果');
     });

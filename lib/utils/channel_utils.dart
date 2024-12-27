@@ -151,10 +151,10 @@ class ChannelUtils {
   //</editor-fold desc="Ble方法">
 
   //<editor-fold desc="绘制数据源相关">
-  static Future<bool> addDrawElement(String data) async {
-    bool result = false;
+  static Future<List<int>?> buildDrawData(String data) async {
+    List<int>? result;
     try {
-      result = await _channel.invokeMethod('addDrawElement', data);
+      result = await _channel.invokeMethod('buildReceipt', data);
     }catch(e){
       print(e);
     }
