@@ -8,7 +8,7 @@ import 'utils/PlatformHandlerUtils.dart';
 import 'utils/SharedPreferencesUtils.dart';
 
 Future<void> main() async{
-  ShapedPreferencesUtils.getInstance();
+  // ShapedPreferencesUtils.getInstance();
   PlatformHandlerUtils.getPlatformByHandler(androidCallBack:() async{
     await DBUtil().initDB();
   });
@@ -21,7 +21,13 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    //
+    // return GetMaterialApp(
+    //   title: '开发者捷印',
+    //   theme: ThemeData.light(),
+    //   darkTheme: ThemeData.dark(),
+    //   themeMode: ShapedPreferencesUtils.getInt(key: Constant.SP_THEME_MODE) == 0 ? ThemeMode.light : ThemeMode.dark,
+    //   home: const MainPage(),
+    // );
     return FutureBuilder(
         future: ShapedPreferencesUtils.getInstance(),
         builder: (context, snapshot) {

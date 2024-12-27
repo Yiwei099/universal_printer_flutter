@@ -1,34 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_printer_flutter/module/about/AboutController.dart';
-import 'package:universal_printer_flutter/utils/SharedPreferencesUtils.dart';
+import 'package:universal_printer_flutter/module/HomeController.dart';
 
 import '../../utils/StringUtils.dart';
 import '../../widget/CodeBlock.dart';
 
-class AboutPage extends StatefulWidget {
-  const AboutPage({super.key});
+class AboutPage extends StatelessWidget {
+  final HomeController _controller = Get.find<HomeController>();
 
-  @override
-  State<StatefulWidget> createState() => _AboutPageState();
-}
-
-class _AboutPageState extends State<AboutPage> {
-  late AboutController controller;
-
-  @override
-  void initState() {
-    controller = Get.put(AboutController());
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    Get.delete<AboutController>();
-    super.dispose();
-  }
+  AboutPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +53,10 @@ class _AboutPageState extends State<AboutPage> {
           right: 10,
           child: IconButton(
               onPressed: () => {
-                    controller.changeThemeMode(),
+                    _controller.changeThemeMode(),
                   },
               icon: Obx(() {
-                return Icon(controller.localThemeMode.value == 1
+                return Icon(_controller.localThemeMode.value == 1
                     ? Icons.dark_mode
                     : Icons.light_mode);
               })),
