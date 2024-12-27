@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/module/draw/source/DrawElementController.dart';
+import 'package:universal_printer_flutter/module/draw/source/draw_element_controller.dart';
 
 class ElementListWidget extends StatefulWidget {
   const ElementListWidget({super.key});

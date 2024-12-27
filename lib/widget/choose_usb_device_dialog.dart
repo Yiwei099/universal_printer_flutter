@@ -1,16 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
-import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
+import 'package:universal_printer_flutter/bean/usb/usb_devices.dart';
+import 'package:universal_printer_flutter/utils/channel_utils.dart';
 
-import 'ComChooseOption.dart';
+import 'com_choose_option.dart';
 
 class ChooseUsbDeviceDialog extends StatefulWidget {
-  String? defaultChooseKey;
-  final onItemClick;
+  final String? defaultChooseKey;
+  final Function(String) onItemClick;
 
-  ChooseUsbDeviceDialog(
+  const ChooseUsbDeviceDialog(
       {super.key, this.defaultChooseKey, required this.onItemClick});
 
   @override

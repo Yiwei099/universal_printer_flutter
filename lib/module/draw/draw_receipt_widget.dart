@@ -1,13 +1,11 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionController.dart';
-import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionWidget.dart';
-import 'package:universal_printer_flutter/module/draw/source/DrawElementController.dart';
-import 'package:universal_printer_flutter/module/draw/source/DrawElementWidget.dart';
+import 'package:universal_printer_flutter/module/draw/canvas/canvas_option_controller.dart';
+import 'package:universal_printer_flutter/module/draw/canvas/canvas_option_widget.dart';
+import 'package:universal_printer_flutter/module/draw/source/draw_element_controller.dart';
+import 'package:universal_printer_flutter/module/draw/source/draw_element_widget.dart';
 
-import '../../utils/PlatformHandlerUtils.dart';
+import '../../utils/platform_handler_utils.dart';
 
 class DrawReceiptWidget extends StatefulWidget {
   const DrawReceiptWidget({super.key});

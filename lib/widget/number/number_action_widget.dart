@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NumberActionWidget extends StatefulWidget {
-  int value; // 默认值
-  int min = 0; // 最小值
-  int max = 100; // 最大值
-  Function(int) listener; // 回调
+  final int value; // 默认值
+  final int min; // 最小值
+  final int max; // 最大值
+  final Function(int) listener; // 回调
 
-  NumberActionWidget(
+  const NumberActionWidget(
       {super.key,
       required this.value,
       required this.listener,

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ComOption extends StatefulWidget {
   final String name;
-  String value;
+  final String value;
 
-  ComOption({super.key, required this.name, this.value = ''});
+  const ComOption({super.key, required this.name, this.value = ''});
 
   @override
   State<ComOption> createState() => _ComOptionState();

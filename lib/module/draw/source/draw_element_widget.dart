@@ -1,17 +1,12 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/bean/draw/element/TextElement.dart';
-import 'package:universal_printer_flutter/module/draw/source/ElementListWidget.dart';
-import 'package:universal_printer_flutter/widget/number/NumberActionWidget.dart';
-import 'package:universal_printer_flutter/widget/radio/RadioGroupWidget.dart';
+import 'package:universal_printer_flutter/module/draw/source/element_list_widget.dart';
+import 'package:universal_printer_flutter/widget/number/number_action_widget.dart';
+import 'package:universal_printer_flutter/widget/radio/radio_group_widget.dart';
 
-import '../../../bean/Item.dart';
-import '../../../constant/Constant.dart';
-import '../../../utils/DrawBeanUtils.dart';
-import 'DrawElementController.dart';
+import '../../../bean/item.dart';
+import '../../../constant/constant.dart';
+import 'draw_element_controller.dart';
 
 class DrawElementWidget extends StatefulWidget {
   const DrawElementWidget({super.key});

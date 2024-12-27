@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 
 class ComChooseOption extends StatefulWidget {
   final String name;
-  bool choose = false;
+  final bool choose;
 
-  ComChooseOption({super.key, required this.name, required this.choose});
+  const ComChooseOption({super.key, required this.name, required this.choose});
 
   @override
   State<ComChooseOption> createState() => _ComChooseOptionState();

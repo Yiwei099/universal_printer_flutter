@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:universal_printer_flutter/bean/ble/BleDevices.dart';
-import 'package:universal_printer_flutter/utils/ChannelUtils.dart';
+import 'package:universal_printer_flutter/bean/ble/ble_devices.dart';
+import 'package:universal_printer_flutter/utils/channel_utils.dart';
 
-import 'ComChooseOption.dart';
+import 'com_choose_option.dart';
 
 class ChooseBleDeviceDialog extends StatefulWidget {
-  String? defaultChooseKey;
-  final onItemClick;
+  final String? defaultChooseKey;
+  final Function(String) onItemClick;
 
-  ChooseBleDeviceDialog(
+  const ChooseBleDeviceDialog(
       {super.key, this.defaultChooseKey, required this.onItemClick});
 
   @override
@@ -47,7 +47,7 @@ class _ChooseBleDeviceDialogState extends State<ChooseBleDeviceDialog> {
               //注册成功开始扫描
               await ChannelUtils.discoveryBleDevices(),
             })
-        .catchError((onError) => {debugPrint(onError)});
+        .catchError((onError) => debugPrint(onError));
   }
 
   /// 开始扫描或停止扫描

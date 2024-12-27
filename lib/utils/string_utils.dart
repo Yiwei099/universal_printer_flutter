@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:universal_printer_flutter/bean/MyPrinter.dart';
-import 'package:universal_printer_flutter/constant/Constant.dart';
+import 'package:universal_printer_flutter/bean/my_printer.dart';
+import 'package:universal_printer_flutter/constant/constant.dart';
 
 class StringUtils {
   static String getChineseString(int length) {

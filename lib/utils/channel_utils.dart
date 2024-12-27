@@ -1,8 +1,9 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:universal_printer_flutter/bean/ble/BleDevices.dart';
-import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
+import 'package:universal_printer_flutter/bean/ble/ble_devices.dart';
+import 'package:universal_printer_flutter/bean/usb/usb_devices.dart';
 
 class ChannelUtils {
 
@@ -47,7 +48,7 @@ class ChannelUtils {
     try {
       result = await _channel.invokeMethod('registerUsbService');
     }catch(e){
-      print(e);
+      debugPrint(e.toString());
     }
     return result;
   }

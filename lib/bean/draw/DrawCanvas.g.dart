@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'DrawCanvas.dart';
+part of 'draw_canvas.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

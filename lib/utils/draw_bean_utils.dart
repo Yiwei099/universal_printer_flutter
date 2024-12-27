@@ -1,5 +1,5 @@
-import '../bean/Item.dart';
-import '../constant/Constant.dart';
+import '../bean/item.dart';
+import '../constant/constant.dart';
 
 class DrawBeanUtils {
 

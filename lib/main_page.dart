@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:universal_printer_flutter/module/HomeController.dart';
-import 'package:universal_printer_flutter/module/about/AboutScreen.dart';
-import 'package:universal_printer_flutter/module/printer/list/PrinterListScreen.dart';
-import 'package:universal_printer_flutter/utils/SharedPreferencesUtils.dart';
+import 'package:universal_printer_flutter/module/about/about_screen.dart';
+import 'package:universal_printer_flutter/module/home_controller.dart';
+import 'package:universal_printer_flutter/module/printer/list/printer_list_screen.dart';
 
-import 'module/draw/DrawingScreen.dart';
+import 'module/draw/drawing_screen.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -45,7 +43,7 @@ class _MainPageState extends State<MainPage> {
             index: _controller.currentIndex.value,
             children: [
               const MyPrinterPage(),
-              const DarwingPage(),
+              const DrawingPage(),
               AboutPage(),
               // const ModifyPrinterPage(),
             ],

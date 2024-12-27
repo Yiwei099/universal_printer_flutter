@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'TextElement.dart';
+part of 'text_element.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

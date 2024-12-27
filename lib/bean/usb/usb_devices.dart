@@ -1,7 +1,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 
-part 'UsbDevices.g.dart';
+part 'usb_devices.g.dart';
 
 @JsonSerializable()
 class UsbDevices {

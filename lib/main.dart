@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/MainPage.dart';
-import 'package:universal_printer_flutter/constant/Constant.dart';
-import 'package:universal_printer_flutter/utils/DBUtils.dart';
+import 'package:universal_printer_flutter/main_page.dart';
+import 'package:universal_printer_flutter/constant/constant.dart';
+import 'package:universal_printer_flutter/utils/db_utils.dart';
 
-import 'utils/PlatformHandlerUtils.dart';
-import 'utils/SharedPreferencesUtils.dart';
+import 'utils/platform_handler_utils.dart';
+import 'utils/shared_preferences_utils.dart';
 
-Future<void> main() async{
-  // ShapedPreferencesUtils.getInstance();
-  PlatformHandlerUtils.getPlatformByHandler(androidCallBack:() async{
+Future<void> main() async {
+  //初始化 sharedPreferences
+  WidgetsFlutterBinding.ensureInitialized();
+  await ShapedPreferencesUtils.getInstance();
+  PlatformHandlerUtils.getPlatformByHandler(androidCallBack: () async {
     await DBUtil().initDB();
   });
   runApp(const MyApp());
@@ -18,26 +20,16 @@ Future<void> main() async{
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // return GetMaterialApp(
-    //   title: '开发者捷印',
-    //   theme: ThemeData.light(),
-    //   darkTheme: ThemeData.dark(),
-    //   themeMode: ShapedPreferencesUtils.getInt(key: Constant.SP_THEME_MODE) == 0 ? ThemeMode.light : ThemeMode.dark,
-    //   home: const MainPage(),
-    // );
-    return FutureBuilder(
-        future: ShapedPreferencesUtils.getInstance(),
-        builder: (context, snapshot) {
-          return GetMaterialApp(
-            title: '开发者捷印',
-            theme: ThemeData.light(),
-            darkTheme: ThemeData.dark(),
-            themeMode: ShapedPreferencesUtils.getInt(key: Constant.SP_THEME_MODE) == 0 ? ThemeMode.light : ThemeMode.dark,
-            home: const MainPage(),
-          );
-        });
+    return GetMaterialApp(
+      title: '开发者捷印',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ShapedPreferencesUtils.getInt(key: Constant.SP_THEME_MODE) == 0
+          ? ThemeMode.light
+          : ThemeMode.dark,
+      home: const MainPage(),
+    );
   }
 }

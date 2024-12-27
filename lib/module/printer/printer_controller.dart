@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:universal_printer_flutter/bean/MyPrinter.dart';
+import 'package:universal_printer_flutter/bean/my_printer.dart';
 
-import '../../bean/ble/BleDevices.dart';
-import '../../bean/usb/UsbDevices.dart';
-import '../../constant/Constant.dart';
-import '../../utils/SharedPreferencesUtils.dart';
-import '../../utils/StringUtils.dart';
+import '../../bean/ble/ble_devices.dart';
+import '../../bean/usb/usb_devices.dart';
+import '../../constant/constant.dart';
+import '../../utils/shared_preferences_utils.dart';
+import '../../utils/string_utils.dart';
 
 class PrinterController extends GetxController {
   final _currentPrinter = MyPrinter(id: 0).obs;
   final Rx<UsbDevices?> _devices = Rx(null);
-  final Rx<BleDevices?> _bleDevices = Rx(null);
+  final _bleDevicesMac = ''.obs;
   final TextEditingController wifiIpController = TextEditingController();
   var showCode = false.obs;
+
+  get bleDevicesMac => _bleDevicesMac.value;
 
   @override
   void onClose() {
@@ -44,8 +45,8 @@ class PrinterController extends GetxController {
     _devices.value = devices;
   }
 
-  void cacheBleDevices(BleDevices devices) {
-    _bleDevices.value = devices;
+  void cacheBleDevices(String devices) {
+    _bleDevicesMac.value = devices;
   }
 
   bool haveUsbDevices() {
@@ -53,7 +54,7 @@ class PrinterController extends GetxController {
   }
 
   bool haveBleDevices() {
-    return _bleDevices.value != null;
+    return _bleDevicesMac.value.isNotEmpty;
   }
 
   /// 是否已经设置好打印机 true-是

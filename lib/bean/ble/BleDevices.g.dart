@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'BleDevices.dart';
+part of 'ble_devices.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

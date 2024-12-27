@@ -1,9 +1,7 @@
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/constant/Constant.dart';
+import 'package:universal_printer_flutter/constant/constant.dart';
 
 class MyPrinter {
-  static const int TYPE_G = 1;
-  static const int TYPE_E = 2;
 
   int id;
   String name; //打印机名称

@@ -2,16 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/bean/MyPrinter.dart';
-import 'package:universal_printer_flutter/bean/ble/BleDevices.dart';
-import 'package:universal_printer_flutter/bean/usb/UsbDevices.dart';
-import 'package:universal_printer_flutter/module/printer/PrinterController.dart';
-import 'package:universal_printer_flutter/utils/StringUtils.dart';
-import 'package:universal_printer_flutter/widget/chooseBleDeviceDialog.dart';
+import 'package:universal_printer_flutter/bean/my_printer.dart';
+import 'package:universal_printer_flutter/bean/ble/ble_devices.dart';
+import 'package:universal_printer_flutter/bean/usb/usb_devices.dart';
+import 'package:universal_printer_flutter/module/printer/printer_controller.dart';
+import 'package:universal_printer_flutter/utils/string_utils.dart';
+import 'package:universal_printer_flutter/widget/choose_ble_device_dialog.dart';
 
-import '../../../constant/Constant.dart';
-import '../../../widget/ChooseUsbDeviceDialog.dart';
-import '../../../widget/CodeBlock.dart';
+import '../../../constant/constant.dart';
+import '../../../widget/choose_usb_device_dialog.dart';
+import '../../../widget/code_block.dart';
 
 class ModifyPrinterPage extends StatefulWidget {
   final MyPrinter myPrinter;
@@ -50,15 +50,7 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
               icon: const Icon(Icons.arrow_back_ios), // 自定义返回按钮图标
               onPressed: () => _onBackPressed(context),
             ),
-            // centerTitle: true,
             titleSpacing: 0,
-            // title: const Text(
-            //   '打印机详情',
-            //   style: TextStyle(
-            //     color: Colors.black,
-            //     fontSize: 16,
-            //   ),
-            // ),
             backgroundColor: Colors.transparent,
           )),
       body: SizedBox.expand(
@@ -73,11 +65,10 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
         children: [
           InkWell(
             onTap: () => {_bindPrinter(context)},
-            child: Obx((){
+            child: Obx(() {
               return _convertPrinterStatus();
             }),
           ),
-          // const SizedBox(height: 10),
           _covertActionView(),
           const SizedBox(height: 10),
           _convertCodeEgView(),
@@ -92,30 +83,22 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         TextButton.icon(
-          onPressed: () => {
-            _controller.toggleShowCode()
-          },
+          onPressed: () => {_controller.toggleShowCode()},
           label: const Text('详细实现'),
-          icon: const Icon(Icons.code_outlined, color: Colors.white),
+          icon: const Icon(Icons.code_outlined),
           style: TextButton.styleFrom(
               padding: const EdgeInsets.only(
-                  top: 20, bottom: 20, left: 40, right: 40),
-              disabledForegroundColor: Colors.white,
-              disabledBackgroundColor: Colors.grey,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white),
+                  top: 20, bottom: 20, left: 40, right: 40)),
         ),
         TextButton.icon(
           onPressed: _controller.isPrinterConnected() ? () => {} : null,
           label: const Text('发起打印'),
-          icon: const Icon(Icons.send, color: Colors.white),
+          icon: const Icon(Icons.send),
           style: TextButton.styleFrom(
               padding: const EdgeInsets.only(
                   top: 20, bottom: 20, left: 40, right: 40),
               disabledForegroundColor: Colors.white,
-              disabledBackgroundColor: Colors.grey,
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white),
+              disabledBackgroundColor: Colors.grey),
         ),
       ],
     );
@@ -128,20 +111,18 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
         duration: const Duration(milliseconds: 250),
         child: _controller.showCode.value
             ? Column(
-          key: ValueKey<bool>(_controller.showCode.value),
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: CodeBlock(
-                  code: StringUtils.getSampleCode(widget.myPrinter)),
-            )
-          ],
-        )
-            : Container(key: ValueKey<bool>(_controller.showCode.value)
-        ),
+                key: ValueKey<bool>(_controller.showCode.value),
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: CodeBlock(
+                        code: StringUtils.getSampleCode(widget.myPrinter)),
+                  )
+                ],
+              )
+            : Container(key: ValueKey<bool>(_controller.showCode.value)),
       );
     });
-
   }
 
   /// 绑定打印机
@@ -154,7 +135,8 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     } else if (printer.connect == ConnectType.ble) {
       // 蓝牙
       _showBleDevicesBottomSheet(
-          context: context, onItemClick: (item) => {_onCacheBleDevices(item)});
+          context: context,
+          onItemClick: (item) => {_onCacheBleDevices(item), Get.back()});
     } else {
       // 局域网
       _showWifiBottomSheet(context: context);
@@ -205,7 +187,6 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
             )),
         const CircleAvatar(
             radius: 40,
-            backgroundColor: Colors.blue,
             child: Icon(Icons.print_outlined, size: 34, color: Colors.white)),
       ],
     );
@@ -222,68 +203,65 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
   }
 
   /// 缓存蓝牙设备
-  void _onCacheBleDevices(BleDevices devices) {
-    _controller.cacheBleDevices(devices);
+  void _onCacheBleDevices(String mac) {
+    _controller.cacheBleDevices(mac);
   }
 
   /// 显示设置 wifi 设备 ip 地址
   void _showWifiBottomSheet({required BuildContext context}) {
-    showModalBottomSheet(
-      context: context,
-      useSafeArea: true,
-      useRootNavigator: true,
+    Get.bottomSheet(
+      Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextButton(
+                onPressed: () => {_onBackPressed(context)},
+                child: const Text('取消'),
+              ),
+              const Expanded(
+                child: Text(
+                  'Wifi 设备',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 14),
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              TextButton(
+                onPressed: () => {_controller.saveWifiIp()},
+                child: const Text('确定'),
+              ),
+            ],
+          ),
+          Padding(
+              padding: const EdgeInsets.only(
+                  top: 40, left: 40, right: 40, bottom: 100),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: _controller.wifiIpController,
+                      decoration: const InputDecoration(
+                        labelText: '请输入IP地址',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      '支持IPv6',
+                      style: TextStyle(fontSize: 12, color: Colors.red),
+                    )
+                  ]))
+        ],
+      ),
+      backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+      barrierColor: Colors.white54,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-      builder: (BuildContext context) {
-        return Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextButton(
-                  onPressed: () => {_onBackPressed(context)},
-                  child: const Text('取消'),
-                ),
-                const Expanded(
-                  child: Text(
-                    'Wifi 设备',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14),
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                TextButton(
-                  onPressed: () => {_controller.saveWifiIp()},
-                  child: const Text('确定'),
-                ),
-              ],
-            ),
-            Padding(
-                padding: const EdgeInsets.only(
-                    top: 40, left: 40, right: 40, bottom: 100),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextField(
-                        controller: _controller.wifiIpController,
-                        decoration: const InputDecoration(
-                          labelText: '请输入IP地址',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      const Text(
-                        '支持IPv6',
-                        style: TextStyle(fontSize: 12, color: Colors.red),
-                      )
-                    ]))
-          ],
-        );
-      },
     );
   }
 
@@ -292,16 +270,13 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     required BuildContext context,
     required onItemClick,
   }) {
-    showModalBottomSheet(
-      context: context,
-      useSafeArea: true,
-      useRootNavigator: true,
+    Get.bottomSheet(
+      ChooseUsbDeviceDialog(onItemClick: onItemClick),
+      backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+      barrierColor: Colors.white54,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-      builder: (BuildContext context) {
-        return ChooseUsbDeviceDialog(onItemClick: onItemClick);
-      },
     );
   }
 
@@ -310,16 +285,13 @@ class _ModifyPrinterPageState extends State<ModifyPrinterPage> {
     required BuildContext context,
     required onItemClick,
   }) {
-    showModalBottomSheet(
-      context: context,
-      useSafeArea: true,
-      useRootNavigator: true,
+    Get.bottomSheet(
+      ChooseBleDeviceDialog(onItemClick: onItemClick,defaultChooseKey: _controller.bleDevicesMac,),
+      backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+      barrierColor: Colors.white54,
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10), topRight: Radius.circular(10))),
-      builder: (BuildContext context) {
-        return ChooseBleDeviceDialog(onItemClick: onItemClick);
-      },
     );
   }
 }

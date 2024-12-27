@@ -1,11 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
-import 'package:universal_printer_flutter/module/draw/canvas/CanvasOptionController.dart';
+import 'package:universal_printer_flutter/module/draw/canvas/canvas_option_controller.dart';
 
-import '../../../bean/Item.dart';
-import '../../../widget/radio/RadioGroupWidget.dart';
+import '../../../bean/item.dart';
+import '../../../widget/radio/radio_group_widget.dart';
 
 class CanvasOptionWidget extends StatefulWidget {
   const CanvasOptionWidget({super.key});

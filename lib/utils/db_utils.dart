@@ -1,8 +1,6 @@
-//
-import 'package:universal_printer_flutter/bean/draw/element/TextElement.dart';
-import 'package:universal_printer_flutter/db/dao/DrawElementDao.dart';
+import 'package:universal_printer_flutter/db/dao/draw_element_dao.dart';
 
-import '../db/AppDatabase.dart';
+import '../db/app_data_base.dart';
 
 class DBUtil {
   //<editor-fold desc="单例的实现">

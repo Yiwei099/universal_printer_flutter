@@ -1,6 +1,6 @@
 
 import 'package:floor/floor.dart';
-import 'package:universal_printer_flutter/bean/draw/element/TextElement.dart';
+import 'package:universal_printer_flutter/bean/draw/element/text_element.dart';
 
 @dao
 abstract class DrawElementDao {

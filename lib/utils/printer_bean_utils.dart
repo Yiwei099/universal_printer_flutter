@@ -1,6 +1,6 @@
-import 'package:universal_printer_flutter/bean/Item.dart';
-import 'package:universal_printer_flutter/bean/MyPrinter.dart';
-import 'package:universal_printer_flutter/constant/Constant.dart';
+import 'package:universal_printer_flutter/bean/item.dart';
+import 'package:universal_printer_flutter/bean/my_printer.dart';
+import 'package:universal_printer_flutter/constant/constant.dart';
 
 class PrinterBeanUtils {
 

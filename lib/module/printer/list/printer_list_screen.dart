@@ -1,11 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/module/printer/detail/PrinterDetailScreen.dart';
-import 'package:universal_printer_flutter/bean/MyPrinter.dart';
-import 'package:universal_printer_flutter/utils/PrinterBeanUtils.dart';
+import 'package:universal_printer_flutter/module/printer/detail/printer_detail_screen.dart';
+import 'package:universal_printer_flutter/bean/my_printer.dart';
+import 'package:universal_printer_flutter/utils/printer_bean_utils.dart';
 
-import '../../../constant/Constant.dart';
+import '../../../constant/constant.dart';
 import 'dart:math';
 
 class MyPrinterPage extends StatelessWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'DrawLabelWidget.dart';
-import 'DrawReceiptWidget.dart';
+import 'draw_label_widget.dart';
+import 'draw_receipt_widget.dart';
 
-class DarwingPage extends StatelessWidget {
-  const DarwingPage({super.key});
+class DrawingPage extends StatelessWidget {
+  const DrawingPage({super.key});
 
   @override
   Widget build(BuildContext context) {

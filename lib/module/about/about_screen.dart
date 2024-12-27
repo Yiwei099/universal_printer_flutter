@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/module/HomeController.dart';
+import 'package:universal_printer_flutter/module/home_controller.dart';
 
-import '../../utils/StringUtils.dart';
-import '../../widget/CodeBlock.dart';
+import '../../utils/string_utils.dart';
+import '../../widget/code_block.dart';
 
 class AboutPage extends StatelessWidget {
   final HomeController _controller = Get.find<HomeController>();

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'UsbDevices.dart';
+part of 'usb_devices.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator

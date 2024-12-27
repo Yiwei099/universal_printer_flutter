@@ -3,11 +3,10 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-import '../../../bean/Item.dart';
-import '../../../bean/draw/element/TextElement.dart';
-import '../../../constant/Constant.dart';
-import '../../../utils/DBUtils.dart';
-import '../../../utils/DrawBeanUtils.dart';
+import '../../../bean/item.dart';
+import '../../../bean/draw/element/text_element.dart';
+import '../../../constant/constant.dart';
+import '../../../utils/draw_bean_utils.dart';
 
 class DrawElementController extends GetxController {
   final RxList<dynamic> _sourceList = [].obs;
@@ -20,7 +19,7 @@ class DrawElementController extends GetxController {
   final TextEditingController lineSpacController = TextEditingController();
   final TextEditingController textEditingController = TextEditingController();
 
-  List<dynamic> get sourceList => _sourceList.value;
+  List<dynamic> get sourceList => _sourceList;
 
   DrawType get chooseDrawType => _chooseDrawType.value;
 
@@ -98,7 +97,7 @@ class DrawElementController extends GetxController {
 
   String getElementShowText(dynamic element) {
     switch (element.runtimeType) {
-      case TextElement:
+      case TextElement _:
         return element.text;
       default:
         return '';

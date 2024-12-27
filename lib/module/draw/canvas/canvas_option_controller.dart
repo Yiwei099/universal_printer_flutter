@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/bean/draw/DrawCanvas.dart';
+import 'package:universal_printer_flutter/bean/draw/draw_canvas.dart';
 
 class CanvasOptionController extends GetxController {
   final DrawCanvas canvas = DrawCanvas();
