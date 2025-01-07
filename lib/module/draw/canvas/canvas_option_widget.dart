@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:universal_printer_flutter/module/draw/canvas/canvas_option_controller.dart';
@@ -24,16 +23,16 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
 
   @override
   void initState() {
-    _controller = Get.find<CanvasOptionController>();
+    _controller =
+        Get.find<CanvasOptionController>(tag: CanvasOptionController.RECEIPT);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(children: [
-      _convertWidgetHeader(),
-      const SizedBox(height: 10),
-      Expanded(child: SingleChildScrollView(
+      Expanded(
+          child: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(children: [
           _convertPageType(),
@@ -48,16 +47,26 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
           const SizedBox(height: 10),
           _convertFollowEffectState(),
         ]),
-      ))
+      )),
+      TextButton.icon(
+        onPressed: () => {_controller.updateCanvas()},
+        label: const Text('保存'),
+        icon: const Icon(Icons.save),
+        style: TextButton.styleFrom(
+            padding:
+                const EdgeInsets.only(top: 14, bottom: 14, left: 40, right: 40),
+            side: const BorderSide(color: Colors.grey, width: 1)),
+      ),
+      const SizedBox(height: 10)
     ]);
   }
 
   Widget _convertPageType() {
-    return Obx((){
+    return Obx(() {
       int defaultValue = -1;
-      if (_controller.canvas.maxWidth.value == 576) {
+      if (_controller.bitmapOption.value.maxWidth == 576) {
         defaultValue = 0;
-      } else if (_controller.canvas.maxWidth.value == 384) {
+      } else if (_controller.bitmapOption.value.maxWidth == 384) {
         defaultValue = 1;
       }
       return RadioGroupWidget(
@@ -75,7 +84,7 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
   }
 
   Widget _convertAlignmentType() {
-    return Obx((){
+    return Obx(() {
       return RadioGroupWidget(
           itemList: [
             Item(key: 0, name: '顶部'),
@@ -86,19 +95,19 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
           listener: (int value) {
             _controller.setAlignmentType(value);
           },
-          defaultValue: _controller.canvas.gravity.value,
+          defaultValue: _controller.bitmapOption.value.gravity,
           hint: '对齐方式');
     });
   }
 
   Widget _convertAliasState() {
-    return Obx((){
+    return Obx(() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text('抗锯齿'),
           Switch(
-            value: _controller.canvas.antiAlias.value,
+            value: _controller.bitmapOption.value.antiAlias,
             onChanged: (value) => {_controller.setAntiAlias(value)},
             activeTrackColor: Get.theme.primaryColor,
             activeColor: Colors.white,
@@ -109,13 +118,13 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
   }
 
   Widget _convertFollowEffectState() {
-    return Obx((){
+    return Obx(() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           const Text('高度不足时终止绘制'),
           Switch(
-            value: _controller.canvas.followEffectItem.value,
+            value: _controller.bitmapOption.value.followEffectItem,
             onChanged: (value) => {_controller.setFollowEffect(value)},
             activeTrackColor: Get.theme.primaryColor,
             activeColor: Colors.white,
@@ -130,83 +139,23 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text('边距'),
-        Row(
+        Column(
           children: [
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: TextField(
-                maxLength: 2,
-                textAlign: TextAlign.center,
-                controller: _controller.topController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: '上',
-                  counterText: '',
-                  labelStyle: TextStyle(
-                    color: Colors.grey, // 设置标签文本颜色
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
+            Row(
+              children: [
+                _convertInputBox(_controller.topController, 3, '上'),
+                const SizedBox(width: 10),
+                _convertInputBox(_controller.endController, 3, '右'),
+              ],
             ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: TextField(
-                maxLength: 2,
-                textAlign: TextAlign.center,
-                controller: _controller.endController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: '右',
-                  counterText: '',
-                  labelStyle: TextStyle(
-                    color: Colors.grey, // 设置标签文本颜色
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: TextField(
-                maxLength: 2,
-                textAlign: TextAlign.center,
-                controller: _controller.bottomController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: '下',
-                  counterText: '',
-                  labelStyle: TextStyle(
-                    color: Colors.grey, // 设置标签文本颜色
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            SizedBox(
-              width: 50,
-              height: 50,
-              child: TextField(
-                maxLength: 2,
-                textAlign: TextAlign.center,
-                controller: _controller.startController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: '左',
-                  counterText: '',
-                  labelStyle: TextStyle(
-                    color: Colors.grey, // 设置标签文本颜色
-                  ),
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                _convertInputBox(_controller.bottomController, 3, '下'),
+                const SizedBox(width: 10),
+                _convertInputBox(_controller.startController, 3, '左'),
+              ],
+            )
           ],
         )
       ],
@@ -219,44 +168,32 @@ class _CanvasOptionBottomSheetWidgetState extends State<CanvasOptionWidget> {
       children: [
         const Text('尺寸'),
         const SizedBox(width: 80),
-        SizedBox(
-          width: 60,
-          height: 40,
-          child: TextField(
-            maxLength: 3,
-            textAlign: TextAlign.center,
-            controller: _controller.widthController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: '宽度',
-              counterText: '',
-              labelStyle: TextStyle(
-                color: Colors.grey, // 设置标签文本颜色
-              ),
-              border: OutlineInputBorder(),
-            ),
-          ),
-        ),
+        _convertInputBox(_controller.widthController, 3, '宽度'),
         const Text('x'),
-        SizedBox(
-          width: 60,
-          height: 40,
-          child: TextField(
-            maxLength: 3,
-            textAlign: TextAlign.center,
-            controller: _controller.heightController,
-            keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: '高度',
-              counterText: '',
-              labelStyle: TextStyle(
-                color: Colors.grey, // 设置标签文本颜色
-              ),
-              border: OutlineInputBorder(),
-            ),
-          ),
-        )
+        _convertInputBox(_controller.heightController, 3, '高度'),
       ],
+    );
+  }
+
+  Widget _convertInputBox(
+      TextEditingController controller, int maxLength, String hint) {
+    return SizedBox(
+      width: 60,
+      height: 50,
+      child: TextField(
+        maxLength: maxLength,
+        textAlign: TextAlign.center,
+        controller: controller,
+        keyboardType: TextInputType.number,
+        decoration: InputDecoration(
+          labelText: hint,
+          counterText: '',
+          labelStyle: const TextStyle(
+            color: Colors.grey, // 设置标签文本颜色
+          ),
+          border: const OutlineInputBorder(),
+        ),
+      ),
     );
   }
 

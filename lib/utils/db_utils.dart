@@ -1,5 +1,8 @@
+import 'package:floor/floor.dart';
+import 'package:universal_printer_flutter/db/dao/dao_bitmap_option.dart';
 import 'package:universal_printer_flutter/db/dao/draw_element_dao.dart';
 
+import '../bean/draw/bitmap_option.dart';
 import '../db/app_data_base.dart';
 
 class DBUtil {
@@ -23,9 +26,25 @@ class DBUtil {
   //定义数据库变量
   late final AppDatabase _db;
 
-  DrawElementDao get daoDrawElement => _db.drawElementDao;
+  DaoBitmapOption get daoBitmapOption => _db.daoBitmapOption;
 
   initDB() async {
     _db = await $FloorAppDatabase.databaseBuilder('AppDatabase.db').build();
+  }
+
+  Future<BitmapOption?> getBitmapOptionByType(int type) {
+    return daoBitmapOption.queryBitmapOptionByType(type);
+  }
+
+  Future<List<BitmapOption>> getBitmapOptions() {
+    return daoBitmapOption.queryBitmapOption();
+  }
+
+  Future<void> saveOptionItem(BitmapOption b) {
+    return daoBitmapOption.insertBitmapOption(b);
+  }
+
+  Future<void> updateOptionItem(BitmapOption b) {
+    return daoBitmapOption.updateBitmapOption(b);
   }
 }

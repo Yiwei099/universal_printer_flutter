@@ -29,30 +29,23 @@ class PlatformHandlerUtils {
     Function()? iosCallBack,
     Function()? otherCallBack,
     Function()? errorCallBack,
+    required Function() defaultCallBack,
   }) {
     try {
       if (Platform.isAndroid) {
         debugPrint('初始化 Android 平台');
-        if (androidCallBack != null) {
-          androidCallBack();
-        }
+        androidCallBack != null ? androidCallBack() : defaultCallBack();
       } else if (Platform.isIOS) {
         debugPrint('初始化 Ios 平台');
-        if (iosCallBack != null) {
-          iosCallBack();
-        }
+        iosCallBack != null ? iosCallBack() : defaultCallBack();
       } else {
         debugPrint('初始化其他平台');
-        if (otherCallBack != null) {
-          otherCallBack();
-        }
+        otherCallBack != null ? otherCallBack() : defaultCallBack();
       }
     } catch (e) {
       debugPrint('获取平台失败');
       // web 报错： Unsupported operation: Platform._operatingSystem 据说要使用 kIsWeb
-      if (errorCallBack != null) {
-        errorCallBack();
-      }
+      errorCallBack != null ? errorCallBack() : defaultCallBack();
     }
   }
 

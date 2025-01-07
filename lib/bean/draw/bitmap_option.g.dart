@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'draw_canvas.dart';
+part of 'bitmap_option.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-DrawCanvas _$DrawCanvasFromJson(Map<String, dynamic> json) => DrawCanvas(
+BitmapOption _$BitmapOptionFromJson(Map<String, dynamic> json) => BitmapOption(
       maxWidth: (json['maxWidth'] as num?)?.toInt() ?? 0,
       maxHeight: (json['maxHeight'] as num?)?.toInt() ?? 0,
       topIndentation: (json['topIndentation'] as num?)?.toDouble() ?? 40.0,
@@ -14,12 +14,13 @@ DrawCanvas _$DrawCanvasFromJson(Map<String, dynamic> json) => DrawCanvas(
       endIndentation: (json['endIndentation'] as num?)?.toDouble() ?? 20.0,
       bottomBlankHeight:
           (json['bottomBlankHeight'] as num?)?.toDouble() ?? 10.0,
-      antiAlias: json['antiAlias'] as bool? ?? false,
+      antiAlias: json['antiAlias'] as bool? ?? true,
       gravity: (json['gravity'] as num?)?.toInt() ?? 0,
       followEffectItem: json['followEffectItem'] as bool? ?? false,
+      bitmapType: (json['bitmapType'] as num?)?.toInt() ?? 0,
     );
 
-Map<String, dynamic> _$DrawCanvasToJson(DrawCanvas instance) =>
+Map<String, dynamic> _$BitmapOptionToJson(BitmapOption instance) =>
     <String, dynamic>{
       'maxWidth': instance.maxWidth,
       'maxHeight': instance.maxHeight,
@@ -30,4 +31,5 @@ Map<String, dynamic> _$DrawCanvasToJson(DrawCanvas instance) =>
       'antiAlias': instance.antiAlias,
       'gravity': instance.gravity,
       'followEffectItem': instance.followEffectItem,
+      'bitmapType': instance.bitmapType,
     };

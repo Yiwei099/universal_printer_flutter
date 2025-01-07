@@ -58,7 +58,7 @@ class _MainPageState extends State<MainPage> {
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.data_object),
-                label: '数据源',
+                label: '预览',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.manage_accounts),

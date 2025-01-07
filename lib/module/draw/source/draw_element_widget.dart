@@ -29,7 +29,7 @@ class _DrawElementWidgetState extends State<DrawElementWidget> {
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: [
-        _convertWidgetHeader(),
+        // _convertWidgetHeader(),
         Expanded(
             child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
@@ -38,9 +38,10 @@ class _DrawElementWidgetState extends State<DrawElementWidget> {
                   const SizedBox(height: 20),
                   _convertLineSpacItem(),
                   _convertTextElementParamWidget(),
-                  const SizedBox(height: 20),
-                  _convertActionBar(),
-                ])))
+                ]))),
+        const SizedBox(height: 20),
+        _convertActionBar(),
+        const SizedBox(height: 10),
       ],
     );
   }
@@ -232,26 +233,29 @@ class _DrawElementWidgetState extends State<DrawElementWidget> {
           label: Obx(() {
             return Text('元素(${_drawElementController.sourceList.length})');
           }),
-          icon: const Icon(Icons.list, color: Colors.white),
+          icon: const Icon(Icons.list),
           style: TextButton.styleFrom(
               padding: const EdgeInsets.only(
-                  top: 20, bottom: 20, left: 40, right: 40),
-              disabledForegroundColor: Colors.white,
-              disabledBackgroundColor: Colors.grey,
-              backgroundColor: Get.theme.primaryColor,
-              foregroundColor: Colors.white),
+                  top: 10, bottom: 10, left: 20, right: 20),
+              side: const BorderSide(color: Colors.grey, width: 1)),
         ),
         TextButton.icon(
           onPressed: () => {},
           label: const Text('预览'),
-          icon: const Icon(Icons.build_circle_outlined, color: Colors.white),
+          icon: const Icon(Icons.build_circle_outlined),
           style: TextButton.styleFrom(
               padding: const EdgeInsets.only(
-                  top: 20, bottom: 20, left: 40, right: 40),
-              disabledForegroundColor: Colors.white,
-              disabledBackgroundColor: Colors.grey,
-              backgroundColor: Get.theme.primaryColor,
-              foregroundColor: Colors.white),
+                  top: 10, bottom: 10, left: 20, right: 20),
+              side: const BorderSide(color: Colors.grey, width: 1)),
+        ),
+        TextButton.icon(
+          onPressed: () => {},
+          label: const Text('保存'),
+          icon: const Icon(Icons.save),
+          style: TextButton.styleFrom(
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 10, left: 20, right: 20),
+              side: const BorderSide(color: Colors.grey, width: 1)),
         ),
       ],
     );

@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:universal_printer_flutter/bean/draw/draw_canvas.dart';
+import 'package:universal_printer_flutter/bean/draw/bitmap_option.dart';
+import 'package:universal_printer_flutter/utils/db_utils.dart';
 
 class CanvasOptionController extends GetxController {
-  final DrawCanvas canvas = DrawCanvas();
+  final bitmapOption = BitmapOption().obs;
+
+  static final RECEIPT = 'receipt';
+  static final Label = 'label';
 
   final TextEditingController widthController = TextEditingController();
   final TextEditingController heightController = TextEditingController();
@@ -12,27 +16,14 @@ class CanvasOptionController extends GetxController {
   final TextEditingController endController = TextEditingController();
   final TextEditingController startController = TextEditingController();
 
+  int bitmapType = 0;
+
+  CanvasOptionController({required this.bitmapType});
+
   @override
   void onInit() {
     super.onInit();
-    if (canvas.maxWidth > 0) {
-      widthController.text = canvas.maxWidth.toString();
-    }
-    if (canvas.maxHeight > 0) {
-      heightController.text = canvas.maxHeight.toString();
-    }
-    if (canvas.topIndentation > 0) {
-      topController.text = canvas.topIndentation.toString();
-    }
-    if (canvas.bottomBlankHeight > 0) {
-      bottomController.text = canvas.bottomBlankHeight.toString();
-    }
-    if (canvas.startIndentation > 0) {
-      startController.text = canvas.startIndentation.toString();
-    }
-    if (canvas.endIndentation > 0) {
-      endController.text = canvas.endIndentation.toString();
-    }
+    _initDataFromDB();
   }
 
   @override
@@ -46,26 +37,69 @@ class CanvasOptionController extends GetxController {
     super.onClose();
   }
 
+  void _initDataFromDB() {
+    DBUtil.instance.getBitmapOptionByType(bitmapType).then((value) {
+      // 小票纸参数
+      if (value != null) {
+        bitmapOption.value = value;
+      } else {
+        // 不存在则新建插入
+        BitmapOption option = BitmapOption(
+          bitmapType: bitmapType,
+        );
+        bitmapOption.value = option;
+        DBUtil.instance.saveOptionItem(option);
+      };
+      _initDataToTextController();
+    });
+  }
+
+  void _initDataToTextController() {
+    if (bitmapOption.value.maxWidth > 0) {
+      widthController.text = bitmapOption.value.maxWidth.toString();
+    }
+    if (bitmapOption.value.maxHeight > 0) {
+      heightController.text = bitmapOption.value.maxHeight.toString();
+    }
+    if (bitmapOption.value.topIndentation > 0) {
+      topController.text = bitmapOption.value.topIndentation.toString();
+    }
+    if (bitmapOption.value.bottomBlankHeight > 0) {
+      bottomController.text = bitmapOption.value.bottomBlankHeight.toString();
+    }
+    if (bitmapOption.value.startIndentation > 0) {
+      startController.text = bitmapOption.value.startIndentation.toString();
+    }
+    if (bitmapOption.value.endIndentation > 0) {
+      endController.text = bitmapOption.value.endIndentation.toString();
+    }
+  }
+
   void updateCanvas() {
-    if (widthController.text.isNotEmpty) {
-      canvas.maxWidth.value = int.parse(widthController.text);
-    }
-    if (heightController.text.isNotEmpty) {
-      canvas.maxHeight.value = int.parse(heightController.text);
-    }
-    if (startController.text.isNotEmpty) {
-      canvas.startIndentation.value = double.parse(startController.text);
-    }
-    if (topController.text.isNotEmpty) {
-      canvas.topIndentation.value = double.parse(topController.text);
-    }
-    if (endController.text.isNotEmpty) {
-      canvas.endIndentation.value = double.parse(endController.text);
-    }
-    if (bottomController.text.isNotEmpty) {
-      canvas.bottomBlankHeight.value = double.parse(bottomController.text);
-    }
-    // callback(canvas);
+    bitmapOption.update((option) {
+      if (option != null) {
+        if (int.tryParse(widthController.text) != null) {
+          option.maxWidth = int.parse(widthController.text);
+        }
+        if (int.tryParse(heightController.text) != null) {
+          option.maxHeight = int.parse(heightController.text);
+        }
+        if (double.tryParse(startController.text) != null) {
+          option.startIndentation = double.parse(startController.text);
+        }
+        if (double.tryParse(endController.text) != null) {
+          option.endIndentation = double.parse(endController.text);
+        }
+        if (double.tryParse(topController.text) != null) {
+          option.topIndentation = double.parse(topController.text);
+        }
+        if (double.tryParse(bottomController.text) != null) {
+          option.bottomBlankHeight = double.parse(bottomController.text);
+        }
+
+        DBUtil.instance.updateOptionItem(option);
+      }
+    });
     Get.back();
   }
 
@@ -76,23 +110,27 @@ class CanvasOptionController extends GetxController {
     } else if (value == 1) {
       newWidth = 384;
     }
-    canvas.maxWidth.value = newWidth;
     widthController.text = newWidth.toString();
-    update();
+    bitmapOption.update((option) {
+      option?.maxWidth = newWidth;
+    });
   }
 
   void setAlignmentType(int value) {
-    canvas.gravity.value = value;
-    update();
+    bitmapOption.update((option) {
+      option?.gravity = value;
+    });
   }
 
   void setAntiAlias(bool value) {
-    canvas.antiAlias.value = value;
-    update();
+    bitmapOption.update((option) {
+      option?.antiAlias = value;
+    });
   }
 
   void setFollowEffect(bool value) {
-    canvas.followEffectItem.value = value;
-    update();
+    bitmapOption.update((option) {
+      option?.followEffectItem = value;
+    });
   }
 }

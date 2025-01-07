@@ -13,8 +13,10 @@ Future<void> main() async {
   await ShapedPreferencesUtils.getInstance();
   PlatformHandlerUtils.getPlatformByHandler(androidCallBack: () async {
     await DBUtil().initDB();
+    runApp(const MyApp());
+  },defaultCallBack: () {
+    runApp(const MyApp());
   });
-  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +32,7 @@ class MyApp extends StatelessWidget {
           ? ThemeMode.light
           : ThemeMode.dark,
       home: const MainPage(),
+      defaultTransition: Transition.rightToLeft,
     );
   }
 }
